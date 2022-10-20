@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.myapplication.ui.theme.*
+import com.example.myapplication.ui.theme.SingUpScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         setContent {
-            SignInScreen()
+            SingUpScreen()
         }
     }
 }
@@ -80,7 +81,7 @@ fun SignInScreen() {
                 value = passwordData.value,
                 onValueChange = { passwordData.value = it },
                 modifier = Modifier
-                    .padding(top = 14.41.dp, start = 16.dp, end = 16.dp)
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 singleLine = true,
                 placeholder = { Text("Пароль", fontWeight = FontWeight(400)) },
@@ -107,7 +108,7 @@ fun SignInScreen() {
                         onClick = {},
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 163.59.dp),
+                            .padding(start = 16.dp, end = 16.dp, top = 164.dp),
                         content = { Text("Войти", fontSize = 16.sp, fontWeight = FontWeight(500)) },
                         colors = ButtonDefaults.outlinedButtonColors(
                             backgroundColor = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) logInButtonColor else backgroundColor,
