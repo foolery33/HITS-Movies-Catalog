@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -64,7 +65,7 @@ fun SignInScreen() {
                     .padding(top = 48.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                placeholder = { Text("Логин") },
+                placeholder = { Text("Логин", fontWeight = FontWeight(400)) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = strokeColor,
                     unfocusedBorderColor = strokeColor,
@@ -72,7 +73,7 @@ fun SignInScreen() {
                     backgroundColor = backgroundColor,
                     placeholderColor = placeholderTextColor
                 ),
-                textStyle = TextStyle(fontSize = 14.sp),
+                textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight(400)),
                 shape = RoundedCornerShape(8.dp)
             )
             OutlinedTextField(
@@ -82,7 +83,7 @@ fun SignInScreen() {
                     .padding(top = 14.41.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                placeholder = { Text("Пароль") },
+                placeholder = { Text("Пароль", fontWeight = FontWeight(400)) },
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -92,37 +93,52 @@ fun SignInScreen() {
                     backgroundColor = backgroundColor,
                     placeholderColor = placeholderTextColor
                 ),
-                textStyle = TextStyle(fontSize = 14.sp),
+                textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight(400)),
                 shape = RoundedCornerShape(8.dp),
             )
-            OutlinedButton(
-                onClick = {},
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 163.59.dp),
-                content = { Text("Войти", fontSize = 16.sp) },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) logInButtonColor else backgroundColor,
-                    contentColor = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) Color.White else textColor
-                ),
-                border = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) BorderStroke(
-                    0.dp,
-                    logInButtonColor
-                ) else BorderStroke(1.dp, strokeColor),
-                shape = RoundedCornerShape(4.dp),
-                contentPadding = buttonPaddingValues
-            )
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp),
-                content = { Text("Регистрация", fontSize = 16.sp) },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = backgroundColor,
-                    contentColor = textColor
-                ),
-            )
+                    .fillMaxSize()
+                    .padding(bottom = 16.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Column {
+                    OutlinedButton(
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 163.59.dp),
+                        content = { Text("Войти", fontSize = 16.sp, fontWeight = FontWeight(500)) },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            backgroundColor = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) logInButtonColor else backgroundColor,
+                            contentColor = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) Color.White else textColor
+                        ),
+                        border = if (loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()) BorderStroke(
+                            0.dp,
+                            logInButtonColor
+                        ) else BorderStroke(1.dp, strokeColor),
+                        shape = RoundedCornerShape(4.dp),
+                        contentPadding = buttonPaddingValues
+                    )
+                    Button(
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+                        content = {
+                            Text(
+                                "Регистрация",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight(500)
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = backgroundColor,
+                            contentColor = textColor
+                        ),
+                    )
+                }
+            }
         }
     }
 }
