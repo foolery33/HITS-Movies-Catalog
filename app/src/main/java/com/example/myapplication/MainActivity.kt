@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.myapplication.ui.theme.*
-import com.example.myapplication.ui.theme.SingUpScreen
+import java.security.AccessController.getContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         setContent {
-            SingUpScreen()
+            SignUpScreen()
         }
     }
 }
@@ -48,7 +48,6 @@ fun SignInScreen() {
     val buttonPaddingValues = PaddingValues(vertical = 12.dp)
     val loginData = remember { mutableStateOf("") }
     val passwordData = remember { mutableStateOf("") }
-    val passwordVisible = remember { mutableStateOf(false) }
     Surface(modifier = Modifier.fillMaxSize(), color = backgroundColor) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -85,7 +84,7 @@ fun SignInScreen() {
                     .fillMaxWidth(),
                 singleLine = true,
                 placeholder = { Text("Пароль", fontWeight = FontWeight(400)) },
-                visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = strokeColor,
