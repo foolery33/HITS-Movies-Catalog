@@ -21,4 +21,9 @@
 
         <item name="android:navigationBarColor">@color/black</item>
     </style>
+
+    <style name="DatePickerDialog" parent="Theme.MyApplication">
+        <item name="android:colorAccent">@color/background</item>
+    </style>
+
 </resources>

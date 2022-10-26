@@ -30,7 +30,7 @@ fun OutlinedPasswordFieldView(
         value = data.value,
         onValueChange = { data.value = it },
         modifier = Modifier
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 16.dp)
             .fillMaxWidth(),
         singleLine = true,
         placeholder = { Text(text = placeholderText, fontWeight = FontWeight(400)) },

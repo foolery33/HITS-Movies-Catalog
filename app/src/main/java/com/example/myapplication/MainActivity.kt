@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun SignInScreen() {
-    val buttonPaddingValues = PaddingValues(vertical = 12.dp)
     val loginData = remember { mutableStateOf("") }
     val passwordData = remember { mutableStateOf("") }
     Surface(modifier = Modifier.fillMaxSize(), color = backgroundColor) {
@@ -115,7 +114,7 @@ fun SignInScreen() {
                             logInButtonColor
                         ) else BorderStroke(1.dp, strokeColor),
                         shape = RoundedCornerShape(4.dp),
-                        contentPadding = buttonPaddingValues
+                        contentPadding = buttonTextPaddings
                     )
                     Button(
                         onClick = {},
