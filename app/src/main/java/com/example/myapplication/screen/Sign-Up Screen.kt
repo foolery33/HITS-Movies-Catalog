@@ -1,23 +1,15 @@
 package com.example.myapplication.screen
 
-import android.app.DatePickerDialog
-import android.util.Log
-import android.widget.DatePicker
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +17,6 @@ import com.example.myapplication.R
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
-import java.util.*
 
 @Preview
 @Composable
@@ -60,16 +51,7 @@ fun SignUpScreen() {
                     .verticalScroll(state = rememberScrollState())
                     .padding(horizontal = defaultPadding)
             ) {
-                Text(
-                    "Регистрация",
-                    color = textColor,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = defaultPadding),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight(700)
-                )
+                SectionText(text = "Регистрация", paddingValues = defaultTopPadding)
                 OutlinedTextFieldView(placeholderText = "Логин", data = loginData)
                 OutlinedTextFieldView(placeholderText = "E-mail", data = emailData)
                 OutlinedTextFieldView(placeholderText = "Имя", data = nameData)
@@ -144,11 +126,13 @@ fun SignUpScreen() {
                         OutlinedButtonView(
                             buttonText = "Зарегистрироваться",
                             areFilledFields = areFilledFields,
-                            paddingValues = firstButtonPaddings
+                            paddingValues = defaultTopPadding
                         )
                         ButtonView(
                             buttonText = "У меня уже есть аккаунт",
-                            paddingValues = commonButtonPaddings
+                            paddingValues = commonButtonPaddings,
+                            backgroundColor = backgroundColor,
+                            textColor = textColor
                         )
                     }
                 }

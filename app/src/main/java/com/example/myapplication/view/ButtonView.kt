@@ -9,14 +9,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.myapplication.ui.theme.*
 
 @Composable
 fun ButtonView(
     buttonText: String,
-    paddingValues: PaddingValues
-) {
+    paddingValues: PaddingValues,
+    backgroundColor: Color,
+    textColor: Color
+    ) {
     Button(
         onClick = {},
         modifier = Modifier
@@ -33,6 +36,7 @@ fun ButtonView(
             backgroundColor = backgroundColor,
             contentColor = textColor
         ),
-        contentPadding = buttonContentPaddings
+        contentPadding = buttonContentPaddings,
+        shape = defaultButtonShape
     )
 }

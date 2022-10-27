@@ -9,5 +9,7 @@ val filledButtonStrokeSize: Dp = 0.dp
 val defaultCornerShape: Dp = 4.dp
 
 val buttonTextSize = 16.sp
+val sectionTextSize = 24.sp
 
 const val buttonFontWeight = 500
+const val sectionButtonFontWeight = 700

@@ -23,4 +23,4 @@ val sexButtonFemale = RoundedCornerShape(
     bottomStart = 0.dp
 )
 
-val unfilledToFilledButtonShape = RoundedCornerShape(defaultCornerShape)
+val defaultButtonShape = RoundedCornerShape(defaultCornerShape)
