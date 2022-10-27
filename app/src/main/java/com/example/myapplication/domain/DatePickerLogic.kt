@@ -35,6 +35,7 @@ fun createDatePicker(data:MutableState<String>): DatePickerDialog {
     // initial values as current values (present year, month and day)
     return DatePickerDialog(
         mContext,
+        R.style.DatePickerDialog,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             data.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
         }, mYear, mMonth, mDay

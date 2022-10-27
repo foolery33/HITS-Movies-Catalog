@@ -39,7 +39,7 @@ fun SignUpScreen() {
     val nameData = remember { mutableStateOf("") }
     val passwordData = remember { mutableStateOf("") }
     val confirmPasswordData = remember { mutableStateOf("") }
-    var maleSexData = remember { mutableStateOf(false) }
+    val maleSexData = remember { mutableStateOf(false) }
     val femaleSexData = remember { mutableStateOf(false) }
 
     val areFilledFields =
@@ -108,12 +108,7 @@ fun SignUpScreen() {
                             contentColor = if (maleSexData.value) baseWhite else placeholderTextColor
                         ),
                         border = BorderStroke(1.dp, strokeColor),
-                        shape = RoundedCornerShape(
-                            topEnd = 0.dp,
-                            topStart = 8.dp,
-                            bottomEnd = 0.dp,
-                            bottomStart = 8.dp
-                        )
+                        shape = sexButtonMale
                     )
                     OutlinedButton(
                         onClick = {
@@ -135,12 +130,7 @@ fun SignUpScreen() {
                             contentColor = if (femaleSexData.value) baseWhite else placeholderTextColor
                         ),
                         border = BorderStroke(1.dp, strokeColor),
-                        shape = RoundedCornerShape(
-                            topEnd = 8.dp,
-                            topStart = 0.dp,
-                            bottomEnd = 8.dp,
-                            bottomStart = 0.dp
-                        )
+                        shape = sexButtonFemale
                     )
 
                 }
