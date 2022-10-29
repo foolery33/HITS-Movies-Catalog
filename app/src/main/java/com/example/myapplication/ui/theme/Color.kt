@@ -8,6 +8,7 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
 val backgroundColor = Color(0xFF150D0B)
+val bottomBarColor = Color(0xFF1C1A19)
 val strokeColor = Color(0xFFB7B7B7)
 val placeholderTextColor = Color(0xFFD1D1D1)
 val textColor = Color(0xFFEF3A01)
