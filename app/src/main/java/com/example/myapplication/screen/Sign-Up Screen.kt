@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,9 +53,24 @@ fun SignUpScreen() {
                     .padding(horizontal = defaultPadding)
             ) {
                 SectionText(text = "Регистрация", paddingValues = defaultTopPadding)
-                OutlinedTextFieldView(placeholderText = "Логин", data = loginData)
-                OutlinedTextFieldView(placeholderText = "E-mail", data = emailData)
-                OutlinedTextFieldView(placeholderText = "Имя", data = nameData)
+                OutlinedTextFieldView(
+                    placeholderText = "Логин",
+                    data = loginData,
+                    topPadding = defaultPadding,
+                    textDecoration = TextDecoration.None
+                )
+                OutlinedTextFieldView(
+                    placeholderText = "E-mail",
+                    data = emailData,
+                    topPadding = defaultPadding,
+                    textDecoration = TextDecoration.None
+                )
+                OutlinedTextFieldView(
+                    placeholderText = "Имя",
+                    data = nameData,
+                    topPadding = defaultPadding,
+                    textDecoration = TextDecoration.None
+                )
                 OutlinedPasswordFieldView(
                     placeholderText = "Пароль",
                     data = passwordData
@@ -63,59 +79,8 @@ fun SignUpScreen() {
                     placeholderText = "Подтвердите пароль",
                     data = confirmPasswordData
                 )
-                DatePickerView(mDate = mDate, mDatePickerDialog = mDatePickerDialog)
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = defaultPadding)
-                ) {
-                    OutlinedButton(
-                        onClick = {
-                            maleSexData.value = !maleSexData.value
-                            if (femaleSexData.value) {
-                                femaleSexData.value = !femaleSexData.value
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f),
-                        content = {
-                            Text(
-                                "Мужчина",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(500),
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            )
-                        }, colors = ButtonDefaults.outlinedButtonColors(
-                            backgroundColor = if (maleSexData.value) logInButtonColor else backgroundColor,
-                            contentColor = if (maleSexData.value) baseWhite else placeholderTextColor
-                        ),
-                        border = BorderStroke(1.dp, strokeColor),
-                        shape = sexButtonMale
-                    )
-                    OutlinedButton(
-                        onClick = {
-                            femaleSexData.value = !femaleSexData.value
-                            if (maleSexData.value) {
-                                maleSexData.value = !maleSexData.value
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(1f),
-                        content = {
-                            Text(
-                                "Женщина",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(500),
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            )
-                        }, colors = ButtonDefaults.outlinedButtonColors(
-                            backgroundColor = if (femaleSexData.value) logInButtonColor else backgroundColor,
-                            contentColor = if (femaleSexData.value) baseWhite else placeholderTextColor
-                        ),
-                        border = BorderStroke(1.dp, strokeColor),
-                        shape = sexButtonFemale
-                    )
-
-                }
+                DatePickerView(mDate = mDate, mDatePickerDialog = mDatePickerDialog, topPadding = defaultPadding)
+                SexPicker(maleSexData = maleSexData, femaleSexData = femaleSexData, topPadding = defaultPadding)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

@@ -17,19 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.*
 
 @Composable
-fun DatePickerView(mDate: MutableState<String>, mDatePickerDialog: DatePickerDialog) {
+fun DatePickerView(mDate: MutableState<String>, mDatePickerDialog: DatePickerDialog, topPadding: Dp) {
     OutlinedTextField(
         enabled = false,
         value = mDate.value.replace('/', '.'),
         onValueChange = { mDate.value },
         modifier = Modifier
-            .padding(top = defaultPadding)
+            .padding(top = topPadding)
             .fillMaxWidth()
             .clickable(indication = null, interactionSource = remember {
                 MutableInteractionSource()
