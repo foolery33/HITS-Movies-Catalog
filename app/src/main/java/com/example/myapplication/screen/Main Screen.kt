@@ -1,5 +1,6 @@
 package com.example.myapplication.screen
 
+import android.annotation.SuppressLint
 import android.widget.ImageButton
 import android.widget.Space
 import androidx.compose.animation.animateContentSize
@@ -33,8 +34,8 @@ import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
 import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.SectionText
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Preview
 @Composable
 fun MainScreen() {
@@ -175,10 +176,12 @@ fun GalleryElement(
                 )
             }
         }
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)) {
-            Column (modifier = Modifier.fillMaxHeight()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            Column(modifier = Modifier.fillMaxHeight()) {
                 // Название фильма
                 Text(
                     text = name, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight(
