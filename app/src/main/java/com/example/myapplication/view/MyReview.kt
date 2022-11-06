@@ -64,7 +64,6 @@ fun MyReview() {
                     Text(
                         text = "3",
                         modifier = Modifier
-                            .padding(top = 5.dp)
                             .background(
                                 color = textColor,
                                 shape = RoundedCornerShape(16.dp)

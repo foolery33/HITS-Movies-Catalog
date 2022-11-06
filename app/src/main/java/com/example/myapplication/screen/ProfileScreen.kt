@@ -1,13 +1,12 @@
 package com.example.myapplication.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,19 +24,15 @@ import com.example.myapplication.R
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
+import com.example.myapplication.viewmodel.profile_screen.rememberProfileScreenState
+import com.example.myapplication.viewmodel.sign_up_screen.rememberDatePickerState
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Preview
 @Composable
 fun ProfileScreen() {
-    val emailData = remember { mutableStateOf("test@example.com") }
-    val pfpLinkData = remember { mutableStateOf("https://vk.com/chdMpx") }
-    val nameData = remember { mutableStateOf("Тест Тестович") }
-    val birthDateData = remember { mutableStateOf("01.01.2022") }
-    val maleSexData = remember { mutableStateOf(false) }
-    val femaleSexData = remember { mutableStateOf(true) }
 
-    val areFilledFields =
-        emailData.value.isNotEmpty() && pfpLinkData.value.isNotEmpty() && nameData.value.isNotEmpty() && birthDateData.value.isNotEmpty() && (maleSexData.value || femaleSexData.value)
+    val profileScreenState = rememberProfileScreenState()
 
     Scaffold(bottomBar = { BottomBar() }) {
         Column(
@@ -78,9 +74,10 @@ fun ProfileScreen() {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = emailData,
+                        data = profileScreenState.emailData,
                         topPadding = halfDefaultPadding,
-                        textDecoration = TextDecoration.None
+                        textDecoration = TextDecoration.None,
+                        visualTransformation = VisualTransformation.None
                     )
                 }
             }
@@ -94,9 +91,10 @@ fun ProfileScreen() {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = pfpLinkData,
+                        data = profileScreenState.linkData,
                         topPadding = halfDefaultPadding,
-                        textDecoration = TextDecoration.Underline
+                        textDecoration = TextDecoration.Underline,
+                        visualTransformation = VisualTransformation.None
                     )
                 }
             }
@@ -110,9 +108,10 @@ fun ProfileScreen() {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = nameData,
+                        data = profileScreenState.nameData,
                         topPadding = halfDefaultPadding,
-                        textDecoration = TextDecoration.None
+                        textDecoration = TextDecoration.None,
+                        visualTransformation = VisualTransformation.None
                     )
                 }
             }
@@ -125,8 +124,8 @@ fun ProfileScreen() {
                         color = strokeColor
                     )
                     DatePickerView(
-                        mDate = birthDateData,
-                        mDatePickerDialog = createDatePicker(data = birthDateData),
+                        profileScreenState.dateData,
+                        mDatePickerDialog = createDatePicker(data = profileScreenState.dateData.dateData),
                         topPadding = halfDefaultPadding
                     )
                 }
@@ -140,19 +139,29 @@ fun ProfileScreen() {
                         color = strokeColor
                     )
                     SexPicker(
-                        maleSexData = maleSexData,
-                        femaleSexData = femaleSexData,
+                        maleSexData = profileScreenState.maleSexData,
+                        femaleSexData = profileScreenState.femaleSexData,
                         topPadding = halfDefaultPadding
                     )
                 }
             }
             Box(
                 modifier = Modifier
-                    .padding(startBottomEndDefaultPadding), contentAlignment = Alignment.BottomCenter
+                    .padding(startBottomEndDefaultPadding),
+                contentAlignment = Alignment.BottomCenter
             ) {
                 Column {
-                    OutlinedButtonView(buttonText = "Сохранить", areFilledFields = areFilledFields, paddingValues = doubleDefaultTopPadding)
-                    ButtonView(buttonText = "Выйти из аккаунта", paddingValues = halfDefaultTopPadding, backgroundColor = backgroundColor, textColor = textColor)
+                    OutlinedButtonView(
+                        buttonText = "Сохранить",
+                        areFilledFields = profileScreenState.areFilledFields,
+                        paddingValues = doubleDefaultTopPadding
+                    )
+                    ButtonView(
+                        buttonText = "Выйти из аккаунта",
+                        paddingValues = halfDefaultTopPadding,
+                        backgroundColor = backgroundColor,
+                        textColor = textColor
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(50.dp))

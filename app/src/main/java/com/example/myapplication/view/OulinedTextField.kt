@@ -1,5 +1,6 @@
 package com.example.myapplication.view
 
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +28,8 @@ fun OutlinedTextFieldView(
     placeholderText: String,
     data: MutableState<String>,
     topPadding: Dp,
-    textDecoration: TextDecoration
+    textDecoration: TextDecoration,
+    visualTransformation: VisualTransformation
 ) {
     OutlinedTextField(
         value = data.value,
@@ -43,7 +46,12 @@ fun OutlinedTextFieldView(
             backgroundColor = backgroundColor,
             placeholderColor = placeholderTextColor
         ),
-        textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight(400), textDecoration = textDecoration),
+        visualTransformation = visualTransformation,
+        textStyle = TextStyle(
+            fontSize = 14.sp,
+            fontWeight = FontWeight(400),
+            textDecoration = textDecoration
+        ),
         shape = RoundedCornerShape(8.dp)
     )
 }

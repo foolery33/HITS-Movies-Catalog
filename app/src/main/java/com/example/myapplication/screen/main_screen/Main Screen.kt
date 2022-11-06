@@ -1,30 +1,23 @@
-package com.example.myapplication.screen
+package com.example.myapplication.screen.main_screen
 
 import android.annotation.SuppressLint
-import android.widget.ImageButton
-import android.widget.Space
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -36,7 +29,6 @@ import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.SectionText
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Preview
 @Composable
 fun MainScreen() {
 
@@ -205,23 +197,16 @@ fun GalleryElement(
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Spacer(modifier = Modifier.height(43.dp))
-                Button(onClick = { /*TODO*/ },
+                Text(
+                    text = rating.toString(),
                     modifier = Modifier
-                        .size(56.dp, 28.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        disabledBackgroundColor = Color.Green
-                    ),
-                    enabled = false,
-                    shape = RoundedCornerShape(16.dp),
-                    contentPadding = PaddingValues(bottom = 2.dp),
-                    content = {
-                        Text(
-                            text = "9",
-                            color = Color.White,
-                            fontSize = buttonTextSize,
-                            fontWeight = FontWeight(buttonFontWeight)
-                        )
-                    }
+                        .background(Color.Green, shape = RoundedCornerShape(16.dp))
+                        .size(56.dp, 28.dp)
+                        .padding(vertical = 4.dp),
+                    color = Color.White,
+                    fontSize = buttonTextSize,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
                 )
             }
         }

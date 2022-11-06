@@ -1,17 +1,17 @@
 package com.example.myapplication.domain
 
 import android.app.DatePickerDialog
+import android.util.Log
 import android.widget.DatePicker
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.R
+import com.example.myapplication.viewmodel.sign_up_screen.DatePickerState
 import java.util.*
 
 @Composable
-fun createDatePicker(data:MutableState<String>): DatePickerDialog {
+fun createDatePicker(data: MutableState<String>): DatePickerDialog {
     // Fetching the Local Context
     val mContext = LocalContext.current
 

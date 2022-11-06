@@ -37,7 +37,6 @@ fun MovieScreen() {
     val state = rememberCollapsingToolbarScaffoldState()
     val progress = state.toolbarState.progress // how much the toolbar is expanded (0: collapsed, 1: expanded)
     val headerHeightPx = with(LocalDensity.current) { headerHeightDp.toPx() }
-
     val enabled by remember { mutableStateOf(true) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -50,16 +49,11 @@ fun MovieScreen() {
             toolbarModifier = Modifier.background(backgroundColor),
             enabled = enabled,
             toolbar = {
-                // Collapsing toolbar collapses its size as small as the that of
-                // a smallest child. To make the toolbar collapse to 50dp, we create
-                // a dummy Spacer composable.
-                // You may replace it with TopAppBar or other preferred composable.
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                 )
-
                 Image(
                     painter = painterResource(id = R.drawable.movie_screen_poster),
                     modifier = Modifier

@@ -1,6 +1,7 @@
 package com.example.myapplication.view
 
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +12,6 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,13 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.*
+import com.example.myapplication.viewmodel.sign_up_screen.DatePickerState
+import com.example.myapplication.viewmodel.sign_up_screen.rememberSignUpScreenState
 
 @Composable
-fun DatePickerView(mDate: MutableState<String>, mDatePickerDialog: DatePickerDialog, topPadding: Dp) {
+fun DatePickerView(dateState: DatePickerState, mDatePickerDialog: DatePickerDialog, topPadding: Dp) {
+
     OutlinedTextField(
         enabled = false,
-        value = mDate.value.replace('/', '.'),
-        onValueChange = { mDate.value },
+        value = dateState.dateData.value.replace('/', '.'),
+        onValueChange = { dateState.dateData.value },
         modifier = Modifier
             .padding(top = topPadding)
             .fillMaxWidth()

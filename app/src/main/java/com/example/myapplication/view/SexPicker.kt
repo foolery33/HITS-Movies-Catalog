@@ -18,8 +18,14 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.theme.*
 
 @Composable
-fun SexPicker(maleSexData: MutableState<Boolean>, femaleSexData: MutableState<Boolean>, topPadding: Dp) {
-    Row(modifier =Modifier.fillMaxSize().padding(vertical = topPadding)) {
+fun SexPicker(
+    maleSexData: MutableState<Boolean>,
+    femaleSexData: MutableState<Boolean>,
+    topPadding: Dp
+) {
+    Row(modifier = Modifier
+        .fillMaxSize()
+        .padding(vertical = topPadding)) {
         OutlinedButton(
             onClick = {
                 maleSexData.value = !maleSexData.value
