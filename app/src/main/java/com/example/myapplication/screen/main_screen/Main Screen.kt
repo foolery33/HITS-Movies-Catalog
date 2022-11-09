@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -18,7 +17,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,10 +25,13 @@ import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
 import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.SectionText
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Destination
 @Composable
-fun MainScreen() {
+fun MainScreen(navigator: DestinationsNavigator) {
 
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
@@ -72,7 +73,8 @@ fun MainScreen() {
                             buttonText = "Смотреть",
                             paddingValues = PaddingValues(horizontal = 110.dp),
                             backgroundColor = logInButtonColor,
-                            textColor = Color.White
+                            textColor = Color.White,
+                            onClickEvent = Unit
                         )
                     }
                 }

@@ -16,10 +16,10 @@ import com.example.myapplication.ui.theme.*
 fun OutlinedButtonView(
     buttonText: String,
     areFilledFields: Boolean,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     OutlinedButton(
-        onClick = {},
+        onClick = { },
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingValues = paddingValues),

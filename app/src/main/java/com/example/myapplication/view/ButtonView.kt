@@ -7,7 +7,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -19,9 +18,9 @@ fun ButtonView(
     paddingValues: PaddingValues,
     backgroundColor: Color,
     textColor: Color
-    ) {
+): Unit {
     Button(
-        onClick = {},
+        onClick = { },
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingValues = paddingValues),

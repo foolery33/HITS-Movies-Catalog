@@ -28,12 +28,15 @@ import com.example.myapplication.view.MyReview
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.flowlayout.SizeMode
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import me.onebone.toolbar.*
 
 val headerHeightDp = 275.dp
 
+@Destination
 @Composable
-fun MovieScreen() {
+fun MovieScreen(navigator: DestinationsNavigator) {
     val state = rememberCollapsingToolbarScaffoldState()
     val progress = state.toolbarState.progress // how much the toolbar is expanded (0: collapsed, 1: expanded)
     val headerHeightPx = with(LocalDensity.current) { headerHeightDp.toPx() }

@@ -7,8 +7,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,19 +16,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.domain.createDatePicker
+import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
 import com.example.myapplication.viewmodel.profile_screen.rememberProfileScreenState
-import com.example.myapplication.viewmodel.sign_up_screen.rememberDatePickerState
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Preview
+@Destination
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navigator: DestinationsNavigator) {
 
     val profileScreenState = rememberProfileScreenState()
 
@@ -154,13 +153,14 @@ fun ProfileScreen() {
                     OutlinedButtonView(
                         buttonText = "Сохранить",
                         areFilledFields = profileScreenState.areFilledFields,
-                        paddingValues = doubleDefaultTopPadding
+                        paddingValues = doubleDefaultTopPadding,
+                        onClickEvent = Unit
                     )
                     ButtonView(
                         buttonText = "Выйти из аккаунта",
                         paddingValues = halfDefaultTopPadding,
                         backgroundColor = backgroundColor,
-                        textColor = textColor
+                        textColor = textColor,
                     )
                 }
             }

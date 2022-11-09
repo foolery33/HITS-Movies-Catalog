@@ -12,19 +12,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.OutlinedButtonView
 import com.example.myapplication.view.OutlinedTextFieldView
 import com.example.myapplication.viewmodel.sign_in_screen.rememberSignInScreenState
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 val loginButtonTopPadding = 48.dp
 val defaultPadding = 16.dp
 val doubleDefaultPadding = 16.dp
 val halfDefaultPadding = defaultPadding / 2
 
+@RootNavGraph(start = true)
+@Destination
 @Composable
-fun SignInScreen() {
+fun SignInScreen(navigator: DestinationsNavigator) {
 
     val signInScreenState = rememberSignInScreenState()
 
@@ -64,14 +70,17 @@ fun SignInScreen() {
                 OutlinedButtonView(
                     buttonText = "Войти",
                     areFilledFields = signInScreenState.areFilledFields,
-                    paddingValues = PaddingValues(0.dp)
+                    paddingValues = PaddingValues(0.dp),
+                    onClickEvent = Unit
                 )
                 ButtonView(
                     buttonText = "Регистрация",
                     paddingValues = PaddingValues(0.dp),
                     backgroundColor = backgroundColor,
-                    textColor = textColor
-                )
+                    textColor = textColor,
+                ) {
+
+                }
             }
         }
     }

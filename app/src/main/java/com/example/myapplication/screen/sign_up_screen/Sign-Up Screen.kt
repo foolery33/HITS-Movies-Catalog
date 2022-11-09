@@ -9,20 +9,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
 import com.example.myapplication.viewmodel.sign_up_screen.rememberSignUpScreenState
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 val defaultPadding = 16.dp
 val doubleDefaultPadding = defaultPadding * 2
 
-@Preview
+@Destination
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(navigator: DestinationsNavigator) {
 
     val signUpScreenState = rememberSignUpScreenState()
 
@@ -97,13 +98,15 @@ fun SignUpScreen() {
                     OutlinedButtonView(
                         buttonText = "Зарегистрироваться",
                         areFilledFields = signUpScreenState.areFilledFields,
-                        paddingValues = defaultTopPadding
+                        paddingValues = defaultTopPadding,
+                        onClickEvent = Unit
                     )
                     ButtonView(
                         buttonText = "У меня уже есть аккаунт",
                         paddingValues = commonButtonPaddings,
                         backgroundColor = backgroundColor,
-                        textColor = textColor
+                        textColor = textColor,
+                        onClickEvent = Unit
                     )
                 }
             }
