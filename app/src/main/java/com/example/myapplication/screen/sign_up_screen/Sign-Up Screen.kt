@@ -12,6 +12,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.domain.createDatePicker
+import com.example.myapplication.screen.destinations.MainScreenDestination
+import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
 import com.example.myapplication.viewmodel.sign_up_screen.rememberSignUpScreenState
@@ -98,16 +100,18 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                     OutlinedButtonView(
                         buttonText = "Зарегистрироваться",
                         areFilledFields = signUpScreenState.areFilledFields,
-                        paddingValues = defaultTopPadding,
-                        onClickEvent = Unit
-                    )
+                        paddingValues = defaultTopPadding
+                    ) {
+                        navigator.navigate(MainScreenDestination)
+                    }
                     ButtonView(
                         buttonText = "У меня уже есть аккаунт",
                         paddingValues = commonButtonPaddings,
                         backgroundColor = backgroundColor,
-                        textColor = textColor,
-                        onClickEvent = Unit
-                    )
+                        textColor = textColor
+                    ) {
+                        navigator.navigate(SignInScreenDestination)
+                    }
                 }
             }
         }

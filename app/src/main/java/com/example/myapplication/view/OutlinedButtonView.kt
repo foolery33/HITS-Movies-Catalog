@@ -17,9 +17,10 @@ fun OutlinedButtonView(
     buttonText: String,
     areFilledFields: Boolean,
     paddingValues: PaddingValues,
+    onClickEvent: () -> Unit
 ) {
     OutlinedButton(
-        onClick = { },
+        onClick = onClickEvent,
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingValues = paddingValues),

@@ -12,6 +12,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.ButtonView
@@ -71,15 +72,16 @@ fun SignInScreen(navigator: DestinationsNavigator) {
                     buttonText = "Войти",
                     areFilledFields = signInScreenState.areFilledFields,
                     paddingValues = PaddingValues(0.dp),
-                    onClickEvent = Unit
-                )
+                ) {
+                    navigator.navigate(MainScreenDestination)
+                }
                 ButtonView(
                     buttonText = "Регистрация",
                     paddingValues = PaddingValues(0.dp),
                     backgroundColor = backgroundColor,
                     textColor = textColor,
                 ) {
-
+                    navigator.navigate(SignUpScreenDestination)
                 }
             }
         }

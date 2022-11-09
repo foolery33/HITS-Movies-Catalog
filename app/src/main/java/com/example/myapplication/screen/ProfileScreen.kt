@@ -33,7 +33,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
 
     val profileScreenState = rememberProfileScreenState()
 
-    Scaffold(bottomBar = { BottomBar() }) {
+    Scaffold(bottomBar = { BottomBar(navigator, 1) }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -153,15 +153,18 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     OutlinedButtonView(
                         buttonText = "Сохранить",
                         areFilledFields = profileScreenState.areFilledFields,
-                        paddingValues = doubleDefaultTopPadding,
-                        onClickEvent = Unit
-                    )
+                        paddingValues = doubleDefaultTopPadding
+                    ) {
+
+                    }
                     ButtonView(
                         buttonText = "Выйти из аккаунта",
                         paddingValues = halfDefaultTopPadding,
                         backgroundColor = backgroundColor,
-                        textColor = textColor,
-                    )
+                        textColor = textColor
+                    ) {
+                        navigator.navigate(SignInScreenDestination)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(50.dp))

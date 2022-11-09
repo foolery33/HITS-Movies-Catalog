@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.screen.destinations.MovieScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
 import com.example.myapplication.view.ButtonView
@@ -35,7 +36,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
 
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    Scaffold(bottomBar = { BottomBar() }) {
+    Scaffold(bottomBar = { BottomBar(navigator, 0) }) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -50,7 +51,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
                         contentDescription = "",
                         modifier = Modifier
                             .onGloballyPositioned { sizeImage = it.size }
-                            .fillMaxWidth(), contentScale = ContentScale.Crop)
+                            .fillMaxWidth(), contentScale = ContentScale.FillWidth)
                     Box(
                         modifier = Modifier
                             .matchParentSize()
@@ -73,9 +74,10 @@ fun MainScreen(navigator: DestinationsNavigator) {
                             buttonText = "Смотреть",
                             paddingValues = PaddingValues(horizontal = 110.dp),
                             backgroundColor = logInButtonColor,
-                            textColor = Color.White,
-                            onClickEvent = Unit
-                        )
+                            textColor = Color.White
+                        ) {
+                            navigator.navigate(MovieScreenDestination)
+                        }
                     }
                 }
             }
@@ -85,12 +87,13 @@ fun MainScreen(navigator: DestinationsNavigator) {
                         .padding(horizontal = 16.dp)
                         .fillMaxSize()
                 ) {
-                    Favourites()
+                    Favourites(navigator)
                     SectionText(text = "Галерея", paddingValues = doubleDefaultTopPadding)
                 }
             }
             items(5) {
                 GalleryElement(
+                    navigator,
                     name = "Люцифер",
                     year = 1999,
                     country = "США",
@@ -106,25 +109,24 @@ fun MainScreen(navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun Favourites() {
+fun Favourites(navigator: DestinationsNavigator) {
     SectionText(text = "Избранное", paddingValues = mainScreenLazyPadding)
     LazyRow(
         modifier = Modifier.padding(top = 22.dp),
         horizontalArrangement = Arrangement.spacedBy(defaultPadding)
     ) {
         items(5) {
-            // TODO: Перенести айтем в отдельный файл
             Box(
                 modifier = Modifier
                     .height(144.dp)
                     .width(100.dp)
             ) {
-                IconButton(onClick = { }) {
+                IconButton(onClick = { navigator.navigate(MovieScreenDestination) }) {
                     Image(
                         painter = painterResource(id = R.drawable.movie_img),
                         contentDescription = "", modifier = Modifier
                             .height(144.dp)
-                            .width(100.dp), contentScale = ContentScale.Fit
+                            .width(100.dp), contentScale = ContentScale.FillWidth
                     )
                 }
                 IconButton(
@@ -145,6 +147,7 @@ fun Favourites() {
 
 @Composable
 fun GalleryElement(
+    navigator: DestinationsNavigator,
     name: String,
     year: Int,
     country: String,
@@ -161,7 +164,7 @@ fun GalleryElement(
                 .height(144.dp)
                 .width(100.dp)
         ) {
-            IconButton(onClick = { }) {
+            IconButton(onClick = { navigator.navigate(MovieScreenDestination) }) {
                 Image(
                     painter = painterResource(id = R.drawable.movie_img),
                     contentDescription = "", modifier = Modifier

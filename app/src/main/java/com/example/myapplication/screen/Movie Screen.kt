@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.myapplication.screen
 
 import androidx.compose.foundation.Image
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.AboutFilmRow
 import com.example.myapplication.view.MovieGenre
@@ -62,11 +65,12 @@ fun MovieScreen(navigator: DestinationsNavigator) {
                     modifier = Modifier
                         .parallax(0.5f)
                         .height(headerHeightDp)
+                        .fillMaxWidth()
                         .graphicsLayer {
                             // change alpha of Image as the toolbar expands
                             alpha = state.toolbarState.progress
                         },
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillWidth,
                     contentDescription = null
                 )
                 Box(
@@ -99,7 +103,7 @@ fun MovieScreen(navigator: DestinationsNavigator) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .height(56.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { navigator.navigate(MainScreenDestination) }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "",

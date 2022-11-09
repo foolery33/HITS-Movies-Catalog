@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.myapplication.screen.NavGraphs
+import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +15,9 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         setContent {
-            DestinationsNavHost(navGraph = NavGraphs.root)
+            MyApplicationTheme {
+                DestinationsNavHost(navGraph = NavGraphs.root)
+            }
         }
     }
 }

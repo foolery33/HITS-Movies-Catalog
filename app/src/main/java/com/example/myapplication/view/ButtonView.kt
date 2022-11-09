@@ -17,10 +17,11 @@ fun ButtonView(
     buttonText: String,
     paddingValues: PaddingValues,
     backgroundColor: Color,
-    textColor: Color
-): Unit {
+    textColor: Color,
+    onClickEvent: () -> Unit
+) {
     Button(
-        onClick = { },
+        onClick = onClickEvent,
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingValues = paddingValues),
