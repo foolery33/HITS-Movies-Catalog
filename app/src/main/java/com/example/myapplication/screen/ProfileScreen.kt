@@ -161,7 +161,8 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         buttonText = "Выйти из аккаунта",
                         paddingValues = halfDefaultTopPadding,
                         backgroundColor = backgroundColor,
-                        textColor = textColor
+                        textColor = textColor,
+                        contentPadding = PaddingValues(6.dp)
                     ) {
                         navigator.navigate(SignInScreenDestination)
                     }

@@ -80,6 +80,7 @@ fun SignInScreen(navigator: DestinationsNavigator) {
                     paddingValues = PaddingValues(0.dp),
                     backgroundColor = backgroundColor,
                     textColor = textColor,
+                    contentPadding = PaddingValues(6.dp)
                 ) {
                     navigator.navigate(SignUpScreenDestination)
                 }

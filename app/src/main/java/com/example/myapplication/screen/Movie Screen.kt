@@ -2,6 +2,7 @@
 
 package com.example.myapplication.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,8 @@ import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.AboutFilmRow
 import com.example.myapplication.view.MovieGenre
 import com.example.myapplication.view.MyReview
+import com.example.myapplication.viewmodel.movie_screen.ReviewDialogState
+import com.example.myapplication.viewmodel.movie_screen.rememberReviewDialogState
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.flowlayout.SizeMode
@@ -40,8 +43,10 @@ val headerHeightDp = 275.dp
 @Destination
 @Composable
 fun MovieScreen(navigator: DestinationsNavigator) {
+    val reviewDialogState = rememberReviewDialogState()
     val state = rememberCollapsingToolbarScaffoldState()
-    val progress = state.toolbarState.progress // how much the toolbar is expanded (0: collapsed, 1: expanded)
+    val progress =
+        state.toolbarState.progress // how much the toolbar is expanded (0: collapsed, 1: expanded)
     val headerHeightPx = with(LocalDensity.current) { headerHeightDp.toPx() }
     val enabled by remember { mutableStateOf(true) }
 
@@ -93,16 +98,18 @@ fun MovieScreen(navigator: DestinationsNavigator) {
                     modifier = Modifier
                         .road(Alignment.TopStart, Alignment.BottomStart)
                         .padding((49 + (16 - 49) * progress).dp, 12.dp, 29.dp, 16.dp),
-                    maxLines = if(state.toolbarState.progress <= 0) 1 else 5,
+                    maxLines = if (state.toolbarState.progress <= 0) 1 else 5,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         ) {
-            Body()
+            Body(reviewDialogState)
         }
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
             IconButton(onClick = { navigator.navigate(MainScreenDestination) }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
@@ -124,7 +131,8 @@ fun MovieScreen(navigator: DestinationsNavigator) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Body() {
+fun Body(reviewDialogState: ReviewDialogState) {
+    ReviewDialog(reviewDialogState = reviewDialogState)
     LazyColumn(
         modifier = Modifier.padding(horizontal = defaultPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -197,13 +205,27 @@ fun Body() {
                 }
             }
         }
+        Log.i("reviewDialogState", reviewDialogState.showDialog.value.toString())
         item {
             Box(modifier = Modifier.fillMaxWidth()) {
-                Text("Отзывы", fontWeight = FontWeight.Medium, fontSize = buttonTextSize, color = Color.White, modifier = Modifier.align(
-                    Alignment.TopStart))
+                Text(
+                    "Отзывы",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = buttonTextSize,
+                    color = Color.White,
+                    modifier = Modifier.align(
+                        Alignment.TopStart
+                    )
+                )
                 CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                        Icon(painter = painterResource(id = R.drawable.plus_sign), contentDescription = "", tint = textColor)
+                    IconButton(onClick = {
+                        reviewDialogState.showDialog.value = true
+                    }, modifier = Modifier.align(Alignment.CenterEnd)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.plus_sign),
+                            contentDescription = "",
+                            tint = textColor
+                        )
                     }
                 }
             }

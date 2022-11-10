@@ -74,7 +74,8 @@ fun MainScreen(navigator: DestinationsNavigator) {
                             buttonText = "Смотреть",
                             paddingValues = PaddingValues(horizontal = 110.dp),
                             backgroundColor = logInButtonColor,
-                            textColor = Color.White
+                            textColor = Color.White,
+                            contentPadding = PaddingValues(12.dp)
                         ) {
                             navigator.navigate(MovieScreenDestination)
                         }

@@ -108,7 +108,8 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                         buttonText = "У меня уже есть аккаунт",
                         paddingValues = commonButtonPaddings,
                         backgroundColor = backgroundColor,
-                        textColor = textColor
+                        textColor = textColor,
+                        contentPadding = PaddingValues(6.dp)
                     ) {
                         navigator.navigate(SignInScreenDestination)
                     }
