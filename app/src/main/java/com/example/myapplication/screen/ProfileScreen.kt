@@ -18,10 +18,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
+import com.example.myapplication.viewmodel.profile_screen.ProfileScreenState
 import com.example.myapplication.viewmodel.profile_screen.rememberProfileScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -30,8 +32,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun ProfileScreen(navigator: DestinationsNavigator) {
-
-    val profileScreenState = rememberProfileScreenState()
 
     Scaffold(bottomBar = { BottomBar(navigator, 1) }) {
         Column(
@@ -73,7 +73,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = profileScreenState.emailData,
+                        data = ViewModel.profileScreen.emailData,
                         topPadding = halfDefaultPadding,
                         textDecoration = TextDecoration.None,
                         visualTransformation = VisualTransformation.None
@@ -90,7 +90,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = profileScreenState.linkData,
+                        data = ViewModel.profileScreen.linkData,
                         topPadding = halfDefaultPadding,
                         textDecoration = TextDecoration.Underline,
                         visualTransformation = VisualTransformation.None
@@ -107,7 +107,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = profileScreenState.nameData,
+                        data = ViewModel.profileScreen.nameData,
                         topPadding = halfDefaultPadding,
                         textDecoration = TextDecoration.None,
                         visualTransformation = VisualTransformation.None
@@ -123,8 +123,8 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         color = strokeColor
                     )
                     DatePickerView(
-                        profileScreenState.dateData,
-                        mDatePickerDialog = createDatePicker(data = profileScreenState.dateData.dateData),
+                        ViewModel.profileScreen.dateData,
+                        mDatePickerDialog = createDatePicker(data = ViewModel.profileScreen.dateData.dateData),
                         topPadding = halfDefaultPadding
                     )
                 }
@@ -138,8 +138,8 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         color = strokeColor
                     )
                     SexPicker(
-                        maleSexData = profileScreenState.maleSexData,
-                        femaleSexData = profileScreenState.femaleSexData,
+                        maleSexData = ViewModel.profileScreen.maleSexData,
+                        femaleSexData = ViewModel.profileScreen.femaleSexData,
                         topPadding = halfDefaultPadding
                     )
                 }
@@ -152,7 +152,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                 Column {
                     OutlinedButtonView(
                         buttonText = "Сохранить",
-                        areFilledFields = profileScreenState.areFilledFields,
+                        areFilledFields = ViewModel.profileScreen.areFilledFields,
                         paddingValues = doubleDefaultTopPadding
                     ) {
 

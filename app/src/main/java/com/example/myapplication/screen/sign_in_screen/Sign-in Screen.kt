@@ -1,17 +1,20 @@
 package com.example.myapplication.screen.sign_in_screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.data.Repositories
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
@@ -22,6 +25,9 @@ import com.example.myapplication.viewmodel.sign_in_screen.rememberSignInScreenSt
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 val loginButtonTopPadding = 48.dp
 val defaultPadding = 16.dp
@@ -34,6 +40,10 @@ val halfDefaultPadding = defaultPadding / 2
 fun SignInScreen(navigator: DestinationsNavigator) {
 
     val signInScreenState = rememberSignInScreenState()
+    val context = LocalContext.current
+/*    if(Repositories.authRepository.getUserToken(LocalContext.current).token != "") {
+        navigator.navigate(MainScreenDestination)
+    }*/
 
     Column(
         modifier = Modifier
@@ -73,6 +83,13 @@ fun SignInScreen(navigator: DestinationsNavigator) {
                     areFilledFields = signInScreenState.areFilledFields,
                     paddingValues = PaddingValues(0.dp),
                 ) {
+                    try {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            signInScreenState.onClickLogin(context = context)
+                        }
+                    } catch (_: Exception) {
+                        Log.i("errorList", "error")
+                    }
                     navigator.navigate(MainScreenDestination)
                 }
                 ButtonView(

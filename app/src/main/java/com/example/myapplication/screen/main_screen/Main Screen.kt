@@ -1,6 +1,7 @@
 package com.example.myapplication.screen.main_screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.data.Repositories
 import com.example.myapplication.screen.destinations.MovieScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
@@ -33,6 +36,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun MainScreen(navigator: DestinationsNavigator) {
+
+    val context = LocalContext.current
 
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
@@ -77,6 +82,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
                             textColor = Color.White,
                             contentPadding = PaddingValues(12.dp)
                         ) {
+                            Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
                             navigator.navigate(MovieScreenDestination)
                         }
                     }

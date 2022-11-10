@@ -1,16 +1,19 @@
 package com.example.myapplication.screen.sign_up_screen
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignInScreenDestination
@@ -19,6 +22,9 @@ import com.example.myapplication.view.*
 import com.example.myapplication.viewmodel.sign_up_screen.rememberSignUpScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 val defaultPadding = 16.dp
 val doubleDefaultPadding = defaultPadding * 2
@@ -28,7 +34,7 @@ val doubleDefaultPadding = defaultPadding * 2
 fun SignUpScreen(navigator: DestinationsNavigator) {
 
     val signUpScreenState = rememberSignUpScreenState()
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize().background(color = backgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -102,6 +108,10 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                         areFilledFields = signUpScreenState.areFilledFields,
                         paddingValues = defaultTopPadding
                     ) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            signUpScreenState.onClickRegister(context)
+                        }
+                        Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
                         navigator.navigate(MainScreenDestination)
                     }
                     ButtonView(
