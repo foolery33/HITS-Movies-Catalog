@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.movie_screen.GetFavouriteFilmDetailsUseCase
+import com.example.myapplication.domain.movie_screen.use_cases.ConvertMoneyViewUseCase
+import com.example.myapplication.network.movie.MovieDetailsModel
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.AboutFilmRow
@@ -45,6 +48,9 @@ val headerHeightDp = 275.dp
 @Destination
 @Composable
 fun MovieScreen(id: Int, navigator: DestinationsNavigator) {
+
+    val currentMovie = GetFavouriteFilmDetailsUseCase().getDetails(id)
+
     val reviewDialogState = rememberReviewDialogState()
     val state = rememberCollapsingToolbarScaffoldState()
     val progress =
@@ -67,19 +73,21 @@ fun MovieScreen(id: Int, navigator: DestinationsNavigator) {
                         .fillMaxWidth()
                         .height(56.dp)
                 )
-                AsyncImage(
-                    model = ViewModel.mainScreen.favouriteMovies.movies[id].poster,
-                    modifier = Modifier
-                        .parallax(0.5f)
-                        .height(headerHeightDp)
-                        .fillMaxWidth()
-                        .graphicsLayer {
-                            // change alpha of Image as the toolbar expands
-                            alpha = state.toolbarState.progress
-                        },
-                    contentScale = ContentScale.FillWidth,
-                    contentDescription = null
-                )
+                if(currentMovie.poster != null) {
+                    AsyncImage(
+                        model = currentMovie.poster,
+                        modifier = Modifier
+                            .parallax(0.5f)
+                            .height(headerHeightDp)
+                            .fillMaxWidth()
+                            .graphicsLayer {
+                                // change alpha of Image as the toolbar expands
+                                alpha = state.toolbarState.progress
+                            },
+                        contentScale = ContentScale.FillWidth,
+                        contentDescription = null
+                    )
+                }
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -92,20 +100,22 @@ fun MovieScreen(id: Int, navigator: DestinationsNavigator) {
                             )
                         )
                 )
-                Text(
-                    text = "Побег из Шоушенка",
-                    fontSize = (24 + (36 - 24) * progress).sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier
-                        .road(Alignment.TopStart, Alignment.BottomStart)
-                        .padding((49 + (16 - 49) * progress).dp, 12.dp, 30.dp, 16.dp),
-                    maxLines = if (state.toolbarState.progress <= 0) 1 else 5,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if(currentMovie.name != null) {
+                    Text(
+                        text = currentMovie.name,
+                        fontSize = (24 + (36 - 24) * progress).sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier
+                            .road(Alignment.TopStart, Alignment.BottomStart)
+                            .padding((49 + (16 - 49) * progress).dp, 12.dp, 30.dp, 16.dp),
+                        maxLines = if (state.toolbarState.progress <= 0) 1 else 5,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         ) {
-            Body(reviewDialogState)
+            Body(reviewDialogState, currentMovie)
         }
         Row(
             modifier = Modifier
@@ -133,7 +143,7 @@ fun MovieScreen(id: Int, navigator: DestinationsNavigator) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Body(reviewDialogState: ReviewDialogState) {
+fun Body(reviewDialogState: ReviewDialogState, currentMovie: MovieDetailsModel) {
     ReviewDialog(reviewDialogState = reviewDialogState)
     LazyColumn(
         modifier = Modifier.padding(horizontal = defaultPadding),
@@ -144,12 +154,14 @@ fun Body(reviewDialogState: ReviewDialogState) {
         }
         item {
             Box(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "Бухгалтер Энди Дюфрейн обвинён в убийстве собственной жены и её любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решётки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, обладающий живым умом и доброй душой, находит подход как к заключённым, так и к охранникам, добиваясь их особого к себе расположения",
-                    color = Color.White,
-                    fontSize = movieInfoFontSize,
-                    fontWeight = FontWeight.Normal
-                )
+                if(currentMovie.description != null) {
+                    Text(
+                        text = currentMovie.description,
+                        color = Color.White,
+                        fontSize = movieInfoFontSize,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
         }
         item {
@@ -170,39 +182,54 @@ fun Body(reviewDialogState: ReviewDialogState) {
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            AboutFilmRow("Год", "1994")
-                            AboutFilmRow("Страна", "США")
-                            AboutFilmRow("Время", "142 мин.")
-                            AboutFilmRow("Слоган", "\"Страх - это кандалы. Надежда - это свобода\"")
-                            AboutFilmRow("Режиссёр", "Фрэнк Дарабонт")
-                            AboutFilmRow("Бюджет", "$25 000 000")
-                            AboutFilmRow("Сборы в мире", "$28 418 687")
-                            AboutFilmRow("Возраст", "16+")
+                            AboutFilmRow("Год", currentMovie.year.toString())
+                            if(currentMovie.country != null) {
+                                AboutFilmRow("Страна", currentMovie.country)
+                            }
+                            AboutFilmRow("Время", "${currentMovie.time} мин.")
+                            if(currentMovie.tagline != null) {
+                                AboutFilmRow("Слоган", "\"${currentMovie.tagline}\"")
+                            }
+                            if(currentMovie.director != null) {
+                                AboutFilmRow("Режиссёр", currentMovie.director)
+                            }
+                            if(currentMovie.budget != null) {
+                                AboutFilmRow("Бюджет", "$${ConvertMoneyViewUseCase().convert(currentMovie.budget.toString())}")
+                            }
+                            if(currentMovie.fees != null) {
+                                AboutFilmRow("Сборы в мире", "$${ConvertMoneyViewUseCase().convert(currentMovie.fees.toString())}")
+                            }
+                            AboutFilmRow("Возраст", "${currentMovie.ageLimit}+")
                         }
                     }
                 }
             }
         }
-        item {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = "Жанры",
-                        fontSize = buttonTextSize,
-                        color = Color.White,
-                        fontWeight = FontWeight.Medium
-                    )
-                    FlowRow(
-                        modifier = Modifier.padding(top = 8.dp),
-                        mainAxisAlignment = MainAxisAlignment.Start,
-                        mainAxisSize = SizeMode.Expand,
-                        crossAxisSpacing = 12.dp,
-                        mainAxisSpacing = 8.dp
-                    ) {
-                        MovieGenre(genre = "драма")
-                        MovieGenre(genre = "боевик")
-                        MovieGenre(genre = "фантастика")
-                        MovieGenre(genre = "мелодрама")
+        if(currentMovie.genres != null) {
+            if(currentMovie.genres.isNotEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Text(
+                                text = "Жанры",
+                                fontSize = buttonTextSize,
+                                color = Color.White,
+                                fontWeight = FontWeight.Medium
+                            )
+                            FlowRow(
+                                modifier = Modifier.padding(top = 8.dp),
+                                mainAxisAlignment = MainAxisAlignment.Start,
+                                mainAxisSize = SizeMode.Expand,
+                                crossAxisSpacing = 12.dp,
+                                mainAxisSpacing = 8.dp
+                            ) {
+                                for (genre in currentMovie.genres) {
+                                    if(genre.name != null) {
+                                        MovieGenre(genre = genre.name)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

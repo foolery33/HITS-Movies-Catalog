@@ -147,7 +147,13 @@ fun Favourites(navigator: DestinationsNavigator) {
                     .height(144.dp)
                     .width(100.dp)
             ) {
-                IconButton(onClick = { navigator.navigate(MovieScreenDestination(index)) }) {
+                IconButton(onClick = {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Log.i("clicked", "clicked")
+                        ViewModel.mainScreen.onClickMovie(id = movie.id)
+                        navigator.navigate(MovieScreenDestination(index))
+                    }
+                }) {
                     AsyncImage(
                         model = movie.poster, contentDescription = "", modifier = Modifier
                             .height(144.dp)
@@ -189,7 +195,9 @@ fun GalleryElement(
                 .height(144.dp)
                 .width(100.dp)
         ) {
-            IconButton(onClick = { navigator.navigate(MovieScreenDestination(1)) }) {
+            IconButton(onClick = {
+                navigator.navigate(MovieScreenDestination(1))
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.movie_img),
                     contentDescription = "", modifier = Modifier
