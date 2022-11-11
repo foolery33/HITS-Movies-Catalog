@@ -1,6 +1,7 @@
 package com.example.myapplication.screen.sign_in_screen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
+import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
@@ -28,6 +30,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 val loginButtonTopPadding = 48.dp
 val defaultPadding = 16.dp
@@ -39,7 +42,6 @@ val halfDefaultPadding = defaultPadding / 2
 @Composable
 fun SignInScreen(navigator: DestinationsNavigator) {
 
-    val signInScreenState = rememberSignInScreenState()
     val context = LocalContext.current
 /*    if(Repositories.authRepository.getUserToken(LocalContext.current).token != "") {
         navigator.navigate(MainScreenDestination)
@@ -59,14 +61,14 @@ fun SignInScreen(navigator: DestinationsNavigator) {
         )
         OutlinedTextFieldView(
             placeholderText = "Логин",
-            data = signInScreenState.loginData,
+            data = ViewModel.signInScreen.loginData,
             topPadding = loginButtonTopPadding,
             textDecoration = TextDecoration.None,
             visualTransformation = VisualTransformation.None
         )
         OutlinedTextFieldView(
             placeholderText = "Пароль",
-            data = signInScreenState.passwordData,
+            data = ViewModel.signInScreen.passwordData,
             topPadding = defaultPadding,
             textDecoration = TextDecoration.None,
             visualTransformation = PasswordVisualTransformation()
@@ -80,14 +82,19 @@ fun SignInScreen(navigator: DestinationsNavigator) {
             Column(verticalArrangement = Arrangement.spacedBy(halfDefaultPadding)) {
                 OutlinedButtonView(
                     buttonText = "Войти",
-                    areFilledFields = signInScreenState.areFilledFields,
+                    areFilledFields = ViewModel.signInScreen.areFilledFields,
                     paddingValues = PaddingValues(0.dp),
                 ) {
                     try {
                         CoroutineScope(Dispatchers.Main).launch {
-                            signInScreenState.onClickLogin(context = context)
+                            ViewModel.signInScreen.onClickLogin(context = context)
                         }
                     } catch (_: Exception) {
+                        Toast.makeText(
+                            context,
+                            "Your authentication token was expired",
+                            Toast.LENGTH_LONG * 2
+                        ).show()
                         Log.i("errorList", "error")
                     }
                     navigator.navigate(MainScreenDestination)

@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
+import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignInScreenDestination
@@ -33,7 +34,6 @@ val doubleDefaultPadding = defaultPadding * 2
 @Composable
 fun SignUpScreen(navigator: DestinationsNavigator) {
 
-    val signUpScreenState = rememberSignUpScreenState()
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize().background(color = backgroundColor),
@@ -53,47 +53,47 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
             SectionText(text = "Регистрация", paddingValues = PaddingValues(top = defaultPadding))
             OutlinedTextFieldView(
                 placeholderText = "Логин",
-                data = signUpScreenState.loginData,
+                data = ViewModel.signUpScreen.loginData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = VisualTransformation.None
             )
             OutlinedTextFieldView(
                 placeholderText = "E-mail",
-                data = signUpScreenState.emailData,
+                data = ViewModel.signUpScreen.emailData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = VisualTransformation.None
             )
             OutlinedTextFieldView(
                 placeholderText = "Имя",
-                data = signUpScreenState.nameData,
+                data = ViewModel.signUpScreen.nameData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = VisualTransformation.None
             )
             OutlinedTextFieldView(
                 placeholderText = "Пароль",
-                data = signUpScreenState.passwordData,
+                data = ViewModel.signUpScreen.passwordData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = PasswordVisualTransformation()
             )
             OutlinedTextFieldView(
                 placeholderText = "Подтвердите пароль",
-                data = signUpScreenState.confirmPasswordData,
+                data = ViewModel.signUpScreen.confirmPasswordData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = PasswordVisualTransformation()
             )
             DatePickerView(
-                dateState = signUpScreenState.dateData,
-                mDatePickerDialog = createDatePicker(data = signUpScreenState.dateData.dateData),
+                dateState = ViewModel.signUpScreen.dateData,
+                mDatePickerDialog = createDatePicker(data = ViewModel.signUpScreen.dateData.dateData),
                 topPadding = defaultPadding
             )
             SexPicker(
-                maleSexData = signUpScreenState.maleSexData,
-                femaleSexData = signUpScreenState.femaleSexData,
+                maleSexData = ViewModel.signUpScreen.maleSexData,
+                femaleSexData = ViewModel.signUpScreen.femaleSexData,
                 topPadding = defaultPadding
             )
             Box(
@@ -105,11 +105,11 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                 Column {
                     OutlinedButtonView(
                         buttonText = "Зарегистрироваться",
-                        areFilledFields = signUpScreenState.areFilledFields,
+                        areFilledFields = ViewModel.signUpScreen.areFilledFields,
                         paddingValues = defaultTopPadding
                     ) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            signUpScreenState.onClickRegister(context)
+                            ViewModel.signUpScreen.onClickRegister(context)
                         }
                         Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
                         navigator.navigate(MainScreenDestination)

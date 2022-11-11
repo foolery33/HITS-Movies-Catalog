@@ -1,6 +1,7 @@
 package com.example.myapplication.view
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -48,13 +49,8 @@ fun BottomBar(navigator: DestinationsNavigator, selectedIndex: Int) {
 
         BottomNavigationItem(selected = selectedIndex == 1, onClick = {
             if(selectedIndex == 0) {
-                try {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        ViewModel.profileScreen.onClickProfile(context = context)
-                        //profileScreenState.onClickProfile(context = context)
-                    }
-                } catch (e: Exception) {
-                    Log.i("errorList", "error")
+                CoroutineScope(Dispatchers.Main).launch {
+                    ViewModel.profileScreen.onClickProfile(context = context, navigator)
                 }
                 navigator.navigate(ProfileScreenDestination)
             }

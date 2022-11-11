@@ -3,6 +3,7 @@ package com.example.myapplication.view
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ fun OutlinedButtonView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingValues = paddingValues),
+        enabled = areFilledFields,
         content = {
             Text(
                 text = buttonText, fontSize = buttonTextSize, fontWeight = FontWeight(
@@ -31,12 +33,11 @@ fun OutlinedButtonView(
                 )
             )
         },
-        colors = unfilledToFilledButton(
-            areFilled = areFilledFields,
-            filledButtonColor = logInButtonColor,
-            unfilledButtonColor = backgroundColor,
-            filledTextColor = Color.White,
-            unfilledTextColor = textColor
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = logInButtonColor,
+            contentColor = Color.White,
+            disabledBackgroundColor = backgroundColor,
+            disabledContentColor = textColor
         ),
         border = unfilledToFilledButtonBorderStroke(
             isFilledButton = areFilledFields,

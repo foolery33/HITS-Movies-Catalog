@@ -1,9 +1,11 @@
 package com.example.myapplication.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,28 +14,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
-import com.example.myapplication.viewmodel.profile_screen.ProfileScreenState
-import com.example.myapplication.viewmodel.profile_screen.rememberProfileScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
 @Composable
 fun ProfileScreen(navigator: DestinationsNavigator) {
 
+    val context = LocalContext.current
+
     Scaffold(bottomBar = { BottomBar(navigator, 1) }) {
+        Log.i("avatarLink", ViewModel.profileScreen.showPictureByLink.value)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,16 +54,22 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.profile_picture),
-                    contentDescription = "",
+                Box(
                     modifier = Modifier
-                        .clip(
-                            CircleShape
-                        )
-                        .size(88.dp),
-                    contentScale = ContentScale.Fit
-                )
+                        .size(88.dp)
+                        .clip(shape = CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SubcomposeAsyncImage(
+                        modifier = Modifier
+                            .size(88.dp)
+                            .clip(shape = CircleShape),
+                        contentScale = ContentScale.FillHeight,
+                        model = ViewModel.profileScreen.showPictureByLink.value,
+                        loading = { CircularProgressIndicator() },
+                        contentDescription = "",
+                        error = { Image(painterResource(R.drawable.pfp_anonym), "") })
+                }
                 Text(
                     text = "Тест", fontSize = sectionTextSize, fontWeight = FontWeight(
                         sectionButtonFontWeight
@@ -155,7 +169,9 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         areFilledFields = ViewModel.profileScreen.areFilledFields,
                         paddingValues = doubleDefaultTopPadding
                     ) {
-
+                        CoroutineScope(Dispatchers.Main).launch {
+                            ViewModel.profileScreen.onClickSave(context = context)
+                        }
                     }
                     ButtonView(
                         buttonText = "Выйти из аккаунта",

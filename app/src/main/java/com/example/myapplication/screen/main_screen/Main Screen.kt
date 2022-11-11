@@ -176,7 +176,7 @@ fun GalleryElement(
                     painter = painterResource(id = R.drawable.movie_img),
                     contentDescription = "", modifier = Modifier
                         .height(144.dp)
-                        .width(100.dp), contentScale = ContentScale.Fit
+                        .width(100.dp), contentScale = ContentScale.FillWidth
                 )
             }
         }
