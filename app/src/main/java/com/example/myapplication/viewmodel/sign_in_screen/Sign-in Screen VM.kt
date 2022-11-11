@@ -13,10 +13,8 @@ class SignInScreenState {
     val areFilledFields: Boolean
     get() = loginData.value.isNotEmpty() && passwordData.value.isNotEmpty()
 
-    private val loginUseCase = LoginUseCase()
-
     suspend fun onClickLogin(context: Context) {
-        loginUseCase.login(
+        LoginUseCase().login(
             username = loginData.value,
             password = passwordData.value,
             context = context

@@ -21,10 +21,8 @@ class SignUpScreenState {
     val areFilledFields: Boolean
         get() = dateData.dateData.value.isNotEmpty() && loginData.value.isNotEmpty() && emailData.value.isNotEmpty() && nameData.value.isNotEmpty() && passwordData.value.isNotEmpty() && confirmPasswordData.value.isNotEmpty() && (maleSexData.value || femaleSexData.value)
 
-    private val registerUseCase = RegisterUseCase()
-
     suspend fun onClickRegister(context: Context) {
-        registerUseCase.registration(
+        RegisterUseCase().registration(
             userName = loginData.value,
             name = nameData.value,
             password = passwordData.value,

@@ -1,11 +1,14 @@
 package com.example.myapplication.screen.main_screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -22,8 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
+import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.screen.destinations.MovieScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
@@ -31,6 +36,9 @@ import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.SectionText
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
@@ -42,6 +50,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
     Scaffold(bottomBar = { BottomBar(navigator, 0) }) {
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,6 +58,9 @@ fun MainScreen(navigator: DestinationsNavigator) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(halfDefaultPadding)
         ) {
+            CoroutineScope(Dispatchers.Main).launch {
+                ViewModel.mainScreen.getFavourites(context)
+            }
             item {
                 Box {
                     Image(
@@ -82,7 +94,10 @@ fun MainScreen(navigator: DestinationsNavigator) {
                             textColor = Color.White,
                             contentPadding = PaddingValues(12.dp)
                         ) {
-                            Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
+                            Log.i(
+                                "tokenValue",
+                                Repositories.authRepository.getUserToken(context).token
+                            )
                             navigator.navigate(MovieScreenDestination)
                         }
                     }
@@ -94,7 +109,9 @@ fun MainScreen(navigator: DestinationsNavigator) {
                         .padding(horizontal = 16.dp)
                         .fillMaxSize()
                 ) {
-                    Favourites(navigator)
+                    if(ViewModel.mainScreen.favouriteMovies.isNotEmpty()) {
+                        Favourites(context, navigator)
+                    }
                     SectionText(text = "Галерея", paddingValues = doubleDefaultTopPadding)
                 }
             }
@@ -116,22 +133,22 @@ fun MainScreen(navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun Favourites(navigator: DestinationsNavigator) {
+fun Favourites(context: Context, navigator: DestinationsNavigator) {
+
     SectionText(text = "Избранное", paddingValues = mainScreenLazyPadding)
     LazyRow(
         modifier = Modifier.padding(top = 22.dp),
         horizontalArrangement = Arrangement.spacedBy(defaultPadding)
     ) {
-        items(5) {
+        itemsIndexed(ViewModel.mainScreen.favouriteMovies) { index, movie ->
             Box(
                 modifier = Modifier
                     .height(144.dp)
                     .width(100.dp)
             ) {
                 IconButton(onClick = { navigator.navigate(MovieScreenDestination) }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.movie_img),
-                        contentDescription = "", modifier = Modifier
+                    AsyncImage(
+                        model = movie.poster, contentDescription = "", modifier = Modifier
                             .height(144.dp)
                             .width(100.dp), contentScale = ContentScale.FillWidth
                     )

@@ -4,6 +4,7 @@ package com.example.myapplication.network
 
 import com.example.myapplication.network.authorization.AuthApi
 import com.example.myapplication.network.authorization.AuthInterceptor
+import com.example.myapplication.network.favourite_movies.FavouriteMoviesApi
 import com.example.myapplication.network.profile.UserApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -12,6 +13,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 object Network {
@@ -55,4 +57,5 @@ object Network {
 
     fun getAuthApi(): AuthApi = retrofit.create(AuthApi::class.java)
     fun getUserApi(): UserApi = retrofit.create(UserApi::class.java)
+    fun getFavouriteMoviesApi(): FavouriteMoviesApi = retrofit.create(FavouriteMoviesApi::class.java)
 }
