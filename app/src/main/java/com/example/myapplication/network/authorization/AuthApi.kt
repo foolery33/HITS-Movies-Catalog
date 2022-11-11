@@ -9,4 +9,6 @@ interface AuthApi {
     suspend fun register(@Body body: RegisterRequestBody): TokenResponse
     @POST("/api/account/login")
     suspend fun login(@Body body: LoginRequestBody): TokenResponse
+    @POST("/api/account/logout")
+    suspend fun logout(): LogoutResponse
 }

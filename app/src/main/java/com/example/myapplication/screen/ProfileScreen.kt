@@ -180,7 +180,9 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         textColor = textColor,
                         contentPadding = PaddingValues(6.dp)
                     ) {
-                        navigator.navigate(SignInScreenDestination)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            ViewModel.profileScreen.onClickLogout(context, navigator)
+                        }
                     }
                 }
             }

@@ -6,10 +6,9 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.example.myapplication.domain.profile_screen.DateReverseConverter
-import com.example.myapplication.domain.profile_screen.GetProfileUseCase
-import com.example.myapplication.domain.profile_screen.IsValidEmailUseCase
-import com.example.myapplication.domain.profile_screen.SaveProfileUseCase
+import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.general_use_cases.MakeToastUseCase
+import com.example.myapplication.domain.profile_screen.*
 import com.example.myapplication.domain.sign_up_screen.use_cases.DateConverterUseCase
 import com.example.myapplication.network.profile.ProfileResponse
 import com.example.myapplication.screen.destinations.SignInScreenDestination
@@ -32,28 +31,28 @@ class ProfileScreenState {
     val areFilledFields: Boolean
         get() = dateData.dateData.value.isNotEmpty() && emailData.value.isNotEmpty() && nameData.value.isNotEmpty() && (femaleSexData.value || maleSexData.value)
 
-    private var profileResponse: ProfileResponse = ProfileResponse("", "", "", "" ,"" ,"", 0)
+    private var profileResponse: ProfileResponse = ProfileResponse("", "", "", "", "", "", 0)
 
     suspend fun onClickProfile(context: Context, navigator: DestinationsNavigator) {
         try {
             val response: ProfileResponse = GetProfileUseCase().getProfile(context = context)
             profileResponse = response
             emailData.value = response.email
-            if(response.avatarLink == null) {
+            if (response.avatarLink == null) {
                 linkData.value = ""
-            }
-            else {
+            } else {
                 linkData.value = response.avatarLink!!
             }
             nameData.value = response.name
-            dateData.dateData.value = DateReverseConverter().toProfileFormat(date = response.birthDate)
-            if(response.gender == 0) {
+            dateData.dateData.value =
+                DateReverseConverter().toProfileFormat(date = response.birthDate)
+            if (response.gender == 0) {
                 maleSexData.value = true
                 femaleSexData.value = false
             }
             showPictureByLink.value = linkData.value
         } catch (e: Exception) {
-            if(e.message.toString().contains("avatar")) {
+            if (e.message.toString().contains("avatar")) {
                 Toast.makeText(
                     context,
                     "Срок действия вашего аутентификационного токена истёк.\nПожалуйста, войдите в ваш аккаунт заново",
@@ -66,16 +65,21 @@ class ProfileScreenState {
     }
 
     suspend fun onClickSave(context: Context) {
-        if(IsValidEmailUseCase().isValid(emailData.value)) {
+        if (IsValidEmailUseCase().isValid(emailData.value)) {
             try {
                 SaveProfileUseCase().saveProfile(
                     id = profileResponse.id,
-                    nickName = if(profileResponse.nickName == null) "Error" else profileResponse.nickName.toString(),
+                    nickName = if (profileResponse.nickName == null) "Error" else profileResponse.nickName.toString(),
                     email = emailData.value,
                     avatarLink = linkData.value,
                     name = nameData.value,
-                    birthDate = DateConverterUseCase().toJsonFormat(dateData.dateData.value.replace("/", ".")),
-                    gender = if(maleSexData.value) 0 else 1,
+                    birthDate = DateConverterUseCase().toJsonFormat(
+                        dateData.dateData.value.replace(
+                            "/",
+                            "."
+                        )
+                    ),
+                    gender = if (maleSexData.value) 0 else 1,
                     context = context
                 )
                 showPictureByLink.value = linkData.value
@@ -85,21 +89,32 @@ class ProfileScreenState {
                     "Данные сохранены",
                     Toast.LENGTH_LONG
                 ).show()
-            } catch(e: Exception) {
-                Toast.makeText(
-                    context,
-                    "Дата рождения не может являться днём, который ещё не наступил",
-                    Toast.LENGTH_LONG
-                ).show()
+            } catch (e: Exception) {
+                MakeToastUseCase().show(
+                    context = context,
+                    text = "Дата рождения не может являться днём, который ещё не наступил"
+                )
                 Log.i("errorList", e.message.toString())
             }
+        } else {
+            MakeToastUseCase().show(
+                context = context,
+                text = "Введённый e-mail не является валидным"
+            )
         }
-        else {
-            Toast.makeText(
-                context,
-                "Введённый e-mail не является валидным",
-                Toast.LENGTH_LONG
-            ).show()
+    }
+
+    suspend fun onClickLogout(context: Context, navigator: DestinationsNavigator) {
+        try {
+            LogoutUseCase().logout(context)
+            ViewModel.signInScreen.loginData.value = ""
+            ViewModel.signInScreen.passwordData.value = ""
+            navigator.navigate(SignInScreenDestination)
+        } catch (e: Exception) {
+            MakeToastUseCase().show(
+                context = context,
+                text = "Ошибка при попытке выхода из аккаунта"
+            )
         }
     }
 }

@@ -1,15 +1,13 @@
-package com.example.myapplication.network
+package com.example.myapplication.network.authorization
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.myapplication.domain.sign_up_screen.repository.AuthRepository
 import com.example.myapplication.model.LoginRequestBody
-import com.example.myapplication.network.SharedPreferencesHandler.sharedPreference
-import com.example.myapplication.network.SharedPreferencesHandler.userToken
-import com.example.myapplication.network.authorization.AuthApi
-import com.example.myapplication.network.authorization.RegisterRequestBody
-import com.example.myapplication.network.authorization.TokenResponse
+import com.example.myapplication.network.Network
+import com.example.myapplication.network.authorization.SharedPreferencesHandler.sharedPreference
+import com.example.myapplication.network.authorization.SharedPreferencesHandler.userToken
 
 private const val SHARED_PREFS_NAME = "shared_prefs_name"
 
@@ -26,6 +24,8 @@ class AuthRepositoryImpl : AuthRepository {
     override suspend fun register(body: RegisterRequestBody): TokenResponse = api.register(body)
 
     override suspend fun login(body: LoginRequestBody): TokenResponse = api.login(body)
+
+    override suspend fun logout(): LogoutResponse = api.logout()
 
     @SuppressLint("CommitPrefEdits")
     override fun saveUserToken(context: Context, tokenResponse: TokenResponse) {
