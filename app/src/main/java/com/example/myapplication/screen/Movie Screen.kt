@@ -23,7 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.myapplication.R
+import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.AboutFilmRow
@@ -42,7 +44,7 @@ val headerHeightDp = 275.dp
 
 @Destination
 @Composable
-fun MovieScreen(navigator: DestinationsNavigator) {
+fun MovieScreen(id: Int, navigator: DestinationsNavigator) {
     val reviewDialogState = rememberReviewDialogState()
     val state = rememberCollapsingToolbarScaffoldState()
     val progress =
@@ -65,8 +67,8 @@ fun MovieScreen(navigator: DestinationsNavigator) {
                         .fillMaxWidth()
                         .height(56.dp)
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.movie_screen_poster),
+                AsyncImage(
+                    model = ViewModel.mainScreen.favouriteMovies.movies[id].poster,
                     modifier = Modifier
                         .parallax(0.5f)
                         .height(headerHeightDp)
@@ -97,7 +99,7 @@ fun MovieScreen(navigator: DestinationsNavigator) {
                     color = Color.White,
                     modifier = Modifier
                         .road(Alignment.TopStart, Alignment.BottomStart)
-                        .padding((49 + (16 - 49) * progress).dp, 12.dp, 29.dp, 16.dp),
+                        .padding((49 + (16 - 49) * progress).dp, 12.dp, 30.dp, 16.dp),
                     maxLines = if (state.toolbarState.progress <= 0) 1 else 5,
                     overflow = TextOverflow.Ellipsis
                 )

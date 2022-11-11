@@ -5,5 +5,5 @@ import retrofit2.http.Header
 
 interface FavouriteMoviesApi {
     @GET("/api/favorites")
-    suspend fun getFavouriteMovies(@Header("Authorization") token: String): List<FavouritesResponse>
+    suspend fun getFavouriteMovies(@Header("Authorization") token: String): FavouritesResponse
 }

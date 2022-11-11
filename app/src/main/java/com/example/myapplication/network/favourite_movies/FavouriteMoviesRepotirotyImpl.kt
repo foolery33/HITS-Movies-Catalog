@@ -9,6 +9,6 @@ class FavouriteMoviesRepotirotyImpl : FavouriteMoviesRepository {
 
     private val api: FavouriteMoviesApi = Network.getFavouriteMoviesApi()
 
-    override suspend fun getFavourites(context: Context): List<FavouritesResponse> =
+    override suspend fun getFavourites(context: Context): FavouritesResponse =
         api.getFavouriteMovies(token = "Bearer " + Repositories.authRepository.getUserToken(context = context).token)
 }

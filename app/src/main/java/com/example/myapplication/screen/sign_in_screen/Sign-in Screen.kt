@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.ViewModel
@@ -30,6 +31,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 val loginButtonTopPadding = 48.dp
@@ -86,8 +88,12 @@ fun SignInScreen(navigator: DestinationsNavigator) {
                     paddingValues = PaddingValues(0.dp),
                 ) {
                     try {
-                        CoroutineScope(Dispatchers.Main).launch {
+                        CoroutineScope(Dispatchers.IO).launch {
                             ViewModel.signInScreen.onClickLogin(context = context)
+
+                            withContext(Dispatchers.Main) {
+                                ViewModel.mainScreen.getFavourites(context = context)
+                            }
                         }
                     } catch (_: Exception) {
                         Toast.makeText(

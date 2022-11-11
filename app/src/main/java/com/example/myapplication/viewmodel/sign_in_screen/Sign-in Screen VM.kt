@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.main_screen.use_cases.GetFavouritesUseCase
 import com.example.myapplication.domain.sign_in_screen.LoginUseCase
 
 class SignInScreenState {

@@ -36,9 +36,7 @@ import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.SectionText
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
@@ -58,9 +56,12 @@ fun MainScreen(navigator: DestinationsNavigator) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(halfDefaultPadding)
         ) {
-            CoroutineScope(Dispatchers.Main).launch {
+            /*CoroutineScope(Dispatchers.IO).launch {
                 ViewModel.mainScreen.getFavourites(context)
-            }
+                withContext(Dispatchers.Main) {
+                    ViewModel.mainScreen.isFavourites.value = ViewModel.mainScreen.favouriteMovies.movies.isNotEmpty()
+                }
+            }*/
             item {
                 Box {
                     Image(
@@ -98,7 +99,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
                                 "tokenValue",
                                 Repositories.authRepository.getUserToken(context).token
                             )
-                            navigator.navigate(MovieScreenDestination)
+                            navigator.navigate(MovieScreenDestination(1))
                         }
                     }
                 }
@@ -109,8 +110,8 @@ fun MainScreen(navigator: DestinationsNavigator) {
                         .padding(horizontal = 16.dp)
                         .fillMaxSize()
                 ) {
-                    if(ViewModel.mainScreen.favouriteMovies.isNotEmpty()) {
-                        Favourites(context, navigator)
+                    if(ViewModel.mainScreen.isFavourites.value) {
+                        Favourites(navigator)
                     }
                     SectionText(text = "Галерея", paddingValues = doubleDefaultTopPadding)
                 }
@@ -133,20 +134,20 @@ fun MainScreen(navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun Favourites(context: Context, navigator: DestinationsNavigator) {
+fun Favourites(navigator: DestinationsNavigator) {
 
     SectionText(text = "Избранное", paddingValues = mainScreenLazyPadding)
     LazyRow(
         modifier = Modifier.padding(top = 22.dp),
         horizontalArrangement = Arrangement.spacedBy(defaultPadding)
     ) {
-        itemsIndexed(ViewModel.mainScreen.favouriteMovies) { index, movie ->
+        itemsIndexed(ViewModel.mainScreen.favouriteMovies.movies) { index, movie ->
             Box(
                 modifier = Modifier
                     .height(144.dp)
                     .width(100.dp)
             ) {
-                IconButton(onClick = { navigator.navigate(MovieScreenDestination) }) {
+                IconButton(onClick = { navigator.navigate(MovieScreenDestination(index)) }) {
                     AsyncImage(
                         model = movie.poster, contentDescription = "", modifier = Modifier
                             .height(144.dp)
@@ -188,7 +189,7 @@ fun GalleryElement(
                 .height(144.dp)
                 .width(100.dp)
         ) {
-            IconButton(onClick = { navigator.navigate(MovieScreenDestination) }) {
+            IconButton(onClick = { navigator.navigate(MovieScreenDestination(1)) }) {
                 Image(
                     painter = painterResource(id = R.drawable.movie_img),
                     contentDescription = "", modifier = Modifier

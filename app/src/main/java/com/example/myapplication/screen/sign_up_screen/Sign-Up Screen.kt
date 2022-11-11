@@ -18,6 +18,7 @@ import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignInScreenDestination
+import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
 import com.example.myapplication.viewmodel.sign_up_screen.rememberSignUpScreenState
@@ -112,6 +113,7 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                             ViewModel.signUpScreen.onClickRegister(context)
                         }
                         Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
+                        navigator.popBackStack(SignUpScreenDestination, true)
                         navigator.navigate(MainScreenDestination)
                     }
                     ButtonView(
