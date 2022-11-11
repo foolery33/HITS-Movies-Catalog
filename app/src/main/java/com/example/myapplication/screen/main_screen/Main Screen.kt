@@ -5,10 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -25,43 +22,65 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
-import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.ViewModels
+import com.example.myapplication.domain.main_screen.use_cases.ConvertMovieListUseCase
+import com.example.myapplication.domain.main_screen.use_cases.GetFirstVisibleIndexUseCase
+import com.example.myapplication.domain.main_screen.use_cases.MakeColorRatingUseCase
+import com.example.myapplication.domain.movie_screen.use_cases.GetMovieRatingUseCase
+import com.example.myapplication.network.favourite_movies.MovieModel
+import com.example.myapplication.network.movie.MovieElementModel
 import com.example.myapplication.screen.destinations.MovieScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
 import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.SectionText
+import com.example.myapplication.viewmodel.main_screen.MainScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.*
+
+fun LazyListState.isScrolledToTheEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index
+
+/*@Composable
+fun MovieList(navigator: DestinationsNavigator, viewModel: MainScreenState) {
+    MainScreen(navigator = navigator, movieList = viewModel.movie)
+}*/
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
 @Composable
 fun MainScreen(navigator: DestinationsNavigator) {
 
+    val movieList = MainScreenState().pagingMovie
     val context = LocalContext.current
 
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    Scaffold(bottomBar = { BottomBar(navigator, 0) }) {
+    val movieListItems: LazyPagingItems<MovieElementModel> = movieList.collectAsLazyPagingItems()
 
+    Scaffold(bottomBar = { BottomBar(navigator, 0) }) {
         LazyColumn(
+
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = backgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(halfDefaultPadding)
         ) {
-            /*CoroutineScope(Dispatchers.IO).launch {
-                ViewModel.mainScreen.getFavourites(context)
-                withContext(Dispatchers.Main) {
-                    ViewModel.mainScreen.isFavourites.value = ViewModel.mainScreen.favouriteMovies.movies.isNotEmpty()
-                }
-            }*/
+
+
+            CoroutineScope(Dispatchers.Main).launch {
+                ViewModels.mainScreen.getFavourites(context)
+                Log.i("favouritesRequest", "favouritesRequest")
+            }
+
+            //if(ViewModel.mainScreen.currentM)
             item {
                 Box {
                     Image(
@@ -99,7 +118,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
                                 "tokenValue",
                                 Repositories.authRepository.getUserToken(context).token
                             )
-                            navigator.navigate(MovieScreenDestination(1))
+                            navigator.navigate(MovieScreenDestination(groupName = ""))
                         }
                     }
                 }
@@ -110,62 +129,96 @@ fun MainScreen(navigator: DestinationsNavigator) {
                         .padding(horizontal = 16.dp)
                         .fillMaxSize()
                 ) {
-                    if(ViewModel.mainScreen.isFavourites.value) {
-                        Favourites(navigator)
+                    if (ViewModels.mainScreen.isFavourites.value) {
+                        Favourites(context, navigator)
                     }
                     SectionText(text = "Галерея", paddingValues = doubleDefaultTopPadding)
                 }
             }
-            items(5) {
-                GalleryElement(
-                    navigator,
-                    name = "Люцифер",
-                    year = 1999,
-                    country = "США",
-                    genres = "драма, криминал",
-                    rating = 9
-                )
+            itemsIndexed(movieListItems) { index, item ->
+                item?.let {
+                    GalleryElement(navigator = navigator, movie = it)
+                }
             }
             item {
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(70.dp))
             }
         }
     }
 }
 
 @Composable
-fun Favourites(navigator: DestinationsNavigator) {
+fun Favourites(context: Context, navigator: DestinationsNavigator) {
 
+
+    ViewModels.mainScreen.lazyListState = rememberLazyListState()
     SectionText(text = "Избранное", paddingValues = mainScreenLazyPadding)
     LazyRow(
         modifier = Modifier.padding(top = 22.dp),
+        state = ViewModels.mainScreen.lazyListState,
         horizontalArrangement = Arrangement.spacedBy(defaultPadding)
     ) {
-        itemsIndexed(ViewModel.mainScreen.favouriteMovies.movies) { index, movie ->
-            Box(
-                modifier = Modifier
-                    .height(144.dp)
-                    .width(100.dp)
-            ) {
-                IconButton(onClick = { navigator.navigate(MovieScreenDestination(index)) }) {
-                    AsyncImage(
-                        model = movie.poster, contentDescription = "", modifier = Modifier
-                            .height(144.dp)
-                            .width(100.dp), contentScale = ContentScale.FillWidth
-                    )
-                }
-                IconButton(
-                    onClick = { /*TODO*/ }, modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .size(12.dp)
-                        .padding(top = 4.dp, end = 4.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.delete_favourite),
-                        contentDescription = "",
-                    )
-                }
+        itemsIndexed(ViewModels.mainScreen.favouriteMovies.movies) { index, movie ->
+            if(index == ViewModels.mainScreen.lazyListState.firstVisibleItemIndex + 1) {
+                FavouritesElement(
+                    context = context, movie = movie, navigator = navigator, modifier = Modifier
+                        .height(172.dp)
+                        .width(120.dp)
+                )
             }
+            else {
+                FavouritesElement(
+                    context = context,
+                    movie = movie,
+                    navigator = navigator,
+                    modifier = Modifier
+                        .height(144.dp)
+                        .width(100.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FavouritesElement(
+    context: Context,
+    movie: MovieModel,
+    navigator: DestinationsNavigator,
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier
+    ) {
+        IconButton(onClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+                ViewModels.mainScreen.onClickMovie(id = movie.id, navigator)
+            }
+        }) {
+            AsyncImage(
+                model = movie.poster,
+                contentDescription = "",
+                modifier = modifier,
+                contentScale = ContentScale.FillWidth
+            )
+        }
+        IconButton(
+            onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    ViewModels.mainScreen.onClickDelete(context, movie.id)
+                    withContext(Dispatchers.Main) {
+                        Repositories.favouriteMoviesRepository.getFavourites(context)
+                    }
+                }
+            }, modifier = Modifier
+                .align(Alignment.TopEnd)
+                .size(12.dp)
+                .padding(top = 4.dp, end = 4.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.delete_favourite),
+                contentDescription = "",
+            )
         }
     }
 }
@@ -173,11 +226,7 @@ fun Favourites(navigator: DestinationsNavigator) {
 @Composable
 fun GalleryElement(
     navigator: DestinationsNavigator,
-    name: String,
-    year: Int,
-    country: String,
-    genres: String,
-    rating: Int
+    movie: MovieElementModel
 ) {
     Row(
         modifier = Modifier
@@ -189,13 +238,20 @@ fun GalleryElement(
                 .height(144.dp)
                 .width(100.dp)
         ) {
-            IconButton(onClick = { navigator.navigate(MovieScreenDestination(1)) }) {
-                Image(
-                    painter = painterResource(id = R.drawable.movie_img),
-                    contentDescription = "", modifier = Modifier
-                        .height(144.dp)
-                        .width(100.dp), contentScale = ContentScale.FillWidth
-                )
+            IconButton(onClick = {
+                CoroutineScope(Dispatchers.Main).launch {
+                    Log.i("Clicked", "Clicked Movie")
+                    ViewModels.mainScreen.onClickMovie(movie.id, navigator)
+                }
+            }) {
+                if (movie.poster != null) {
+                    AsyncImage(
+                        model = movie.poster,
+                        contentDescription = "", modifier = Modifier
+                            .height(144.dp)
+                            .width(100.dp), contentScale = ContentScale.FillWidth
+                    )
+                }
             }
         }
         Box(
@@ -205,32 +261,56 @@ fun GalleryElement(
         ) {
             Column(modifier = Modifier.fillMaxHeight()) {
                 // Название фильма
-                Text(
-                    text = name, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight(
-                        sectionButtonFontWeight
+                if (movie.name != null) {
+                    Text(
+                        text = movie.name,
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight(
+                            sectionButtonFontWeight
+                        )
                     )
-                )
+                }
                 // Год и жанр фильма
-                Text(
-                    text = "$year • $country",
-                    color = Color.White,
-                    fontSize = movieInfoFontSize,
-                    fontWeight = FontWeight(defaultFontWeight),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                if (movie.country != null) {
+                    Text(
+                        text = "${movie.year} • ${movie.country}",
+                        color = Color.White,
+                        fontSize = movieInfoFontSize,
+                        fontWeight = FontWeight(defaultFontWeight),
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                } else {
+                    Text(
+                        text = "$movie.year",
+                        color = Color.White,
+                        fontSize = movieInfoFontSize,
+                        fontWeight = FontWeight(defaultFontWeight),
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
                 // Жанры
-                Text(
-                    text = genres,
-                    color = Color.White,
-                    fontSize = movieInfoFontSize,
-                    fontWeight = FontWeight(defaultFontWeight),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                if (movie.genres != null) {
+                    Text(
+                        text = ConvertMovieListUseCase().toString(movie.genres),
+                        color = Color.White,
+                        fontSize = movieInfoFontSize,
+                        fontWeight = FontWeight(defaultFontWeight),
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(43.dp))
+                // Рейтинг
                 Text(
-                    text = rating.toString(),
+                    text = if (movie.reviews == null) "0" else GetMovieRatingUseCase().getRating(
+                        movie.reviews
+                    ).toString(),
                     modifier = Modifier
-                        .background(Color.Green, shape = RoundedCornerShape(16.dp))
+                        .background(
+                            if (movie.reviews == null) Color.LightGray else MakeColorRatingUseCase().makeColor(
+                                GetMovieRatingUseCase().getRating(movie.reviews)
+                            ), shape = RoundedCornerShape(16.dp)
+                        )
                         .size(56.dp, 28.dp)
                         .padding(vertical = 4.dp),
                     color = Color.White,

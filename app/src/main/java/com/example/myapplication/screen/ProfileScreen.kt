@@ -22,9 +22,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.myapplication.R
-import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.createDatePicker
-import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
 import com.ramcosta.composedestinations.annotation.Destination
@@ -41,7 +40,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
     val context = LocalContext.current
 
     Scaffold(bottomBar = { BottomBar(navigator, 1) }) {
-        Log.i("avatarLink", ViewModel.profileScreen.showPictureByLink.value)
+        Log.i("avatarLink", ViewModels.profileScreen.showPictureByLink.value)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,7 +64,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                             .size(88.dp)
                             .clip(shape = CircleShape),
                         contentScale = ContentScale.FillHeight,
-                        model = ViewModel.profileScreen.showPictureByLink.value,
+                        model = ViewModels.profileScreen.showPictureByLink.value,
                         loading = { CircularProgressIndicator() },
                         contentDescription = "",
                         error = { Image(painterResource(R.drawable.pfp_anonym), "") })
@@ -87,7 +86,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = ViewModel.profileScreen.emailData,
+                        data = ViewModels.profileScreen.emailData,
                         topPadding = halfDefaultPadding,
                         textDecoration = TextDecoration.None,
                         visualTransformation = VisualTransformation.None
@@ -104,7 +103,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = ViewModel.profileScreen.linkData,
+                        data = ViewModels.profileScreen.linkData,
                         topPadding = halfDefaultPadding,
                         textDecoration = TextDecoration.Underline,
                         visualTransformation = VisualTransformation.None
@@ -121,7 +120,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     )
                     OutlinedTextFieldView(
                         placeholderText = "",
-                        data = ViewModel.profileScreen.nameData,
+                        data = ViewModels.profileScreen.nameData,
                         topPadding = halfDefaultPadding,
                         textDecoration = TextDecoration.None,
                         visualTransformation = VisualTransformation.None
@@ -137,8 +136,8 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         color = strokeColor
                     )
                     DatePickerView(
-                        ViewModel.profileScreen.dateData,
-                        mDatePickerDialog = createDatePicker(data = ViewModel.profileScreen.dateData.dateData),
+                        ViewModels.profileScreen.dateData,
+                        mDatePickerDialog = createDatePicker(data = ViewModels.profileScreen.dateData.dateData),
                         topPadding = halfDefaultPadding
                     )
                 }
@@ -152,8 +151,8 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         color = strokeColor
                     )
                     SexPicker(
-                        maleSexData = ViewModel.profileScreen.maleSexData,
-                        femaleSexData = ViewModel.profileScreen.femaleSexData,
+                        maleSexData = ViewModels.profileScreen.maleSexData,
+                        femaleSexData = ViewModels.profileScreen.femaleSexData,
                         topPadding = halfDefaultPadding
                     )
                 }
@@ -166,11 +165,11 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                 Column {
                     OutlinedButtonView(
                         buttonText = "Сохранить",
-                        areFilledFields = ViewModel.profileScreen.areFilledFields,
+                        areFilledFields = ViewModels.profileScreen.areFilledFields,
                         paddingValues = doubleDefaultTopPadding
                     ) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            ViewModel.profileScreen.onClickSave(context = context)
+                            ViewModels.profileScreen.onClickSave(context = context)
                         }
                     }
                     ButtonView(
@@ -181,7 +180,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         contentPadding = PaddingValues(6.dp)
                     ) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            ViewModel.profileScreen.onClickLogout(context, navigator)
+                            ViewModels.profileScreen.onClickLogout(context, navigator)
                         }
                     }
                 }

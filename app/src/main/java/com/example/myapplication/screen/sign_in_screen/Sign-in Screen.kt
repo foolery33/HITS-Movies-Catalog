@@ -1,7 +1,5 @@
 package com.example.myapplication.screen.sign_in_screen
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,25 +12,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavBackStackEntry
 import com.example.myapplication.R
-import com.example.myapplication.data.Repositories
-import com.example.myapplication.domain.ViewModel
-import com.example.myapplication.screen.destinations.MainScreenDestination
+import com.example.myapplication.domain.ViewModels
+import com.example.myapplication.domain.general_use_cases.MakeToastUseCase
 import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.ButtonView
 import com.example.myapplication.view.OutlinedButtonView
 import com.example.myapplication.view.OutlinedTextFieldView
-import com.example.myapplication.viewmodel.sign_in_screen.rememberSignInScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 
 val loginButtonTopPadding = 48.dp
 val defaultPadding = 16.dp
@@ -63,14 +56,14 @@ fun SignInScreen(navigator: DestinationsNavigator) {
         )
         OutlinedTextFieldView(
             placeholderText = "Логин",
-            data = ViewModel.signInScreen.loginData,
+            data = ViewModels.signInScreen.loginData,
             topPadding = loginButtonTopPadding,
             textDecoration = TextDecoration.None,
             visualTransformation = VisualTransformation.None
         )
         OutlinedTextFieldView(
             placeholderText = "Пароль",
-            data = ViewModel.signInScreen.passwordData,
+            data = ViewModels.signInScreen.passwordData,
             topPadding = defaultPadding,
             textDecoration = TextDecoration.None,
             visualTransformation = PasswordVisualTransformation()
@@ -84,26 +77,22 @@ fun SignInScreen(navigator: DestinationsNavigator) {
             Column(verticalArrangement = Arrangement.spacedBy(halfDefaultPadding)) {
                 OutlinedButtonView(
                     buttonText = "Войти",
-                    areFilledFields = ViewModel.signInScreen.areFilledFields,
+                    areFilledFields = ViewModels.signInScreen.areFilledFields,
                     paddingValues = PaddingValues(0.dp),
                 ) {
                     try {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            ViewModel.signInScreen.onClickLogin(context = context)
-
-                            withContext(Dispatchers.Main) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            ViewModels.signInScreen.onClickLogin(
+                                context = context,
+                                navigator = navigator
+                            )
+                            /*withContext(Dispatchers.IO) {
                                 ViewModel.mainScreen.getFavourites(context = context)
-                            }
+                            }*/
                         }
-                    } catch (_: Exception) {
-                        Toast.makeText(
-                            context,
-                            "Your authentication token was expired",
-                            Toast.LENGTH_LONG * 2
-                        ).show()
-                        Log.i("errorList", "error")
+                    } catch (e: Exception) {
+                        MakeToastUseCase().show(context, "Срок действия авторизационного токена истёк")
                     }
-                    navigator.navigate(MainScreenDestination)
                 }
                 ButtonView(
                     buttonText = "Регистрация",

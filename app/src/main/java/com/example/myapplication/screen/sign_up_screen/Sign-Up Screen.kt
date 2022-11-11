@@ -14,14 +14,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
-import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.createDatePicker
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.screen.destinations.SignUpScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.*
-import com.example.myapplication.viewmodel.sign_up_screen.rememberSignUpScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
@@ -54,47 +53,47 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
             SectionText(text = "Регистрация", paddingValues = PaddingValues(top = defaultPadding))
             OutlinedTextFieldView(
                 placeholderText = "Логин",
-                data = ViewModel.signUpScreen.loginData,
+                data = ViewModels.signUpScreen.loginData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = VisualTransformation.None
             )
             OutlinedTextFieldView(
                 placeholderText = "E-mail",
-                data = ViewModel.signUpScreen.emailData,
+                data = ViewModels.signUpScreen.emailData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = VisualTransformation.None
             )
             OutlinedTextFieldView(
                 placeholderText = "Имя",
-                data = ViewModel.signUpScreen.nameData,
+                data = ViewModels.signUpScreen.nameData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = VisualTransformation.None
             )
             OutlinedTextFieldView(
                 placeholderText = "Пароль",
-                data = ViewModel.signUpScreen.passwordData,
+                data = ViewModels.signUpScreen.passwordData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = PasswordVisualTransformation()
             )
             OutlinedTextFieldView(
                 placeholderText = "Подтвердите пароль",
-                data = ViewModel.signUpScreen.confirmPasswordData,
+                data = ViewModels.signUpScreen.confirmPasswordData,
                 topPadding = defaultPadding,
                 textDecoration = TextDecoration.None,
                 visualTransformation = PasswordVisualTransformation()
             )
             DatePickerView(
-                dateState = ViewModel.signUpScreen.dateData,
-                mDatePickerDialog = createDatePicker(data = ViewModel.signUpScreen.dateData.dateData),
+                dateState = ViewModels.signUpScreen.dateData,
+                mDatePickerDialog = createDatePicker(data = ViewModels.signUpScreen.dateData.dateData),
                 topPadding = defaultPadding
             )
             SexPicker(
-                maleSexData = ViewModel.signUpScreen.maleSexData,
-                femaleSexData = ViewModel.signUpScreen.femaleSexData,
+                maleSexData = ViewModels.signUpScreen.maleSexData,
+                femaleSexData = ViewModels.signUpScreen.femaleSexData,
                 topPadding = defaultPadding
             )
             Box(
@@ -106,11 +105,11 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                 Column {
                     OutlinedButtonView(
                         buttonText = "Зарегистрироваться",
-                        areFilledFields = ViewModel.signUpScreen.areFilledFields,
+                        areFilledFields = ViewModels.signUpScreen.areFilledFields,
                         paddingValues = defaultTopPadding
                     ) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            ViewModel.signUpScreen.onClickRegister(context)
+                            ViewModels.signUpScreen.onClickRegister(context)
                         }
                         Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
                         navigator.popBackStack(SignUpScreenDestination, true)

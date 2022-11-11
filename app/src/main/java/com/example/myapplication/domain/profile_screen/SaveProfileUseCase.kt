@@ -2,7 +2,6 @@ package com.example.myapplication.domain.profile_screen
 
 import android.content.Context
 import com.example.myapplication.data.Repositories
-import com.example.myapplication.domain.ViewModel
 import com.example.myapplication.network.profile.ProfileRequestBody
 
 class SaveProfileUseCase {

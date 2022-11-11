@@ -6,11 +6,11 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.example.myapplication.domain.ViewModel
+import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.general_use_cases.MakeToastUseCase
 import com.example.myapplication.domain.profile_screen.*
 import com.example.myapplication.domain.sign_up_screen.use_cases.DateConverterUseCase
-import com.example.myapplication.network.favourite_movies.FavouritesResponse
+import com.example.myapplication.network.favourite_movies.FavouriteMovieList
 import com.example.myapplication.network.profile.ProfileResponse
 import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.viewmodel.sign_up_screen.DatePickerState
@@ -109,10 +109,10 @@ class ProfileScreenState {
         try {
             LogoutUseCase().logout(context)
             // Удаление некоторых данных, влияющих на отображение информации
-            ViewModel.signInScreen.loginData.value = ""
-            ViewModel.signInScreen.passwordData.value = ""
-            ViewModel.mainScreen.favouriteMovies = FavouritesResponse(emptyList())
-            ViewModel.mainScreen.isFavourites.value = false
+            ViewModels.signInScreen.loginData.value = ""
+            ViewModels.signInScreen.passwordData.value = ""
+            ViewModels.mainScreen.favouriteMovies = FavouriteMovieList(emptyList())
+            ViewModels.mainScreen.isFavourites.value = false
             navigator.popBackStack(SignInScreenDestination, true)
             navigator.navigate(SignInScreenDestination)
         } catch (e: Exception) {

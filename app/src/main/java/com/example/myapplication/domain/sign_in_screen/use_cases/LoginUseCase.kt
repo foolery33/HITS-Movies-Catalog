@@ -1,4 +1,4 @@
-package com.example.myapplication.domain.sign_in_screen
+package com.example.myapplication.domain.sign_in_screen.use_cases
 
 import android.content.Context
 import com.example.myapplication.data.Repositories
