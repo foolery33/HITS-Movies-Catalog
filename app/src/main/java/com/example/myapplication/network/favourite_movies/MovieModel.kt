@@ -8,5 +8,5 @@ data class MovieModel(
     val year: Int,
     val country: String?,
     val genres: List<GenreModel>?,
-    val reviews: List<ReviewModel>?
+    val reviews: List<ReviewShortModel>?
 )

@@ -70,7 +70,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                         error = { Image(painterResource(R.drawable.pfp_anonym), "") })
                 }
                 Text(
-                    text = "Тест", fontSize = sectionTextSize, fontWeight = FontWeight(
+                    text = ViewModels.profileScreen.nickName.value, fontSize = sectionTextSize, fontWeight = FontWeight(
                         sectionButtonFontWeight
                     ), color = Color.White,
                     modifier = Modifier.padding(start = defaultPadding)
@@ -185,7 +185,7 @@ fun ProfileScreen(navigator: DestinationsNavigator) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(70.dp))
         }
     }
 }

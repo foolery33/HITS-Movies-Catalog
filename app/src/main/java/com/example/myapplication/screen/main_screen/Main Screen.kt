@@ -27,16 +27,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import coil.compose.AsyncImage
 import com.example.myapplication.R
-import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.main_screen.use_cases.ConvertMovieListUseCase
-import com.example.myapplication.domain.main_screen.use_cases.GetFirstVisibleIndexUseCase
 import com.example.myapplication.domain.main_screen.use_cases.MakeColorRatingUseCase
 import com.example.myapplication.domain.movie_screen.use_cases.GetMovieRatingUseCase
 import com.example.myapplication.network.favourite_movies.MovieModel
 import com.example.myapplication.network.movie.MovieElementModel
-import com.example.myapplication.screen.destinations.MainScreenDestination
-import com.example.myapplication.screen.destinations.MovieScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
 import com.example.myapplication.view.ButtonView
@@ -85,7 +81,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
                         contentDescription = "",
                         modifier = Modifier
                             .onGloballyPositioned { sizeImage = it.size }
-                            .fillMaxWidth(), contentScale = ContentScale.FillWidth)
+                            .height(320.dp).fillMaxWidth(), contentScale = ContentScale.Crop)
                     Box(
                         modifier = Modifier
                             .matchParentSize()
@@ -94,7 +90,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
                                     colors = listOf(
                                         Color.Transparent, Color.Black
                                     ),
-                                    startY = sizeImage.height.toFloat() / 1.4f,
+                                    startY = sizeImage.height.toFloat() / 1.55f,
                                     endY = sizeImage.height.toFloat()
                                 )
                             )
@@ -147,6 +143,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
     }
 }
 
+@SuppressLint("FrequentlyChangedStateReadInComposition")
 @Composable
 fun Favourites(context: Context, navigator: DestinationsNavigator) {
 

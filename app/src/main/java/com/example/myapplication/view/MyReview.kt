@@ -1,6 +1,8 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.myapplication.view
 
-import androidx.compose.foundation.Image
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,16 +20,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.myapplication.R
+import com.example.myapplication.data.Repositories
+import com.example.myapplication.domain.ViewModels
+import com.example.myapplication.domain.profile_screen.DateReverseConverter
+import com.example.myapplication.network.movie.ReviewModel
 import com.example.myapplication.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MyReview() {
+fun MyReview(context: Context, review: ReviewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, placeholderTextColor, RoundedCornerShape(8.dp))
+            .border(3.dp, textColor, RoundedCornerShape(8.dp))
     ) {
         Column {
             Box(
@@ -36,8 +46,8 @@ fun MyReview() {
                     .padding(start = 8.dp, top = 8.dp, end = 8.dp)
             ) {
                 Row(modifier = Modifier.align(Alignment.TopStart)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_picture),
+                    AsyncImage(
+                        model = ViewModels.profileScreen.linkData,
                         contentDescription = "",
                         modifier = Modifier
                             .clip(
@@ -49,7 +59,7 @@ fun MyReview() {
                     Spacer(modifier = Modifier.width(8.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            "Test",
+                            text = ViewModels.profileScreen.nickName.value,
                             color = Color.White,
                             fontSize = buttonTextSize,
                             fontWeight = FontWeight.Medium
@@ -62,7 +72,7 @@ fun MyReview() {
                         )
                     }
                     Text(
-                        text = "3",
+                        text = review.rating.toString(),
                         modifier = Modifier
                             .background(
                                 color = textColor,
@@ -77,37 +87,68 @@ fun MyReview() {
             }
             Box(modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)) {
                 Text(
-                    text = "Сразу скажу, что фильм мне понравился.\nЛюблю Фримэна, уважаю Роббинса. Читаю Кинга. Но рецензия красненькая.",
+                    text = review.reviewText ?: "",
                     color = Color.White,
                     fontSize = movieInfoFontSize,
                     fontWeight = FontWeight.Normal
                 )
             }
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, top = 4.dp, bottom = 8.dp, end = 8.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, top = 4.dp, bottom = 8.dp, end = 8.dp)
+            ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "07.10.2022", color = strokeColor, fontSize = 12.sp, fontWeight = FontWeight.Normal)
+                    Text(
+                        text = DateReverseConverter().toProfileFormat(review.createDateTime),
+                        color = strokeColor,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier
-                            .size(24.dp)
-                            .background(
-                                color = Color(0x40BDBDBD),
-                                shape = RoundedCornerShape(24.dp)
-                            )) {
-                            Icon(painter = painterResource(id = R.drawable.edit_review), contentDescription = "", tint = placeholderTextColor)
+                        IconButton(
+                            onClick = {
+                                ViewModels.reviewDialog.action = "edit"
+                                ViewModels.reviewDialog.showDialog.value = true
+
+                            }, modifier = Modifier
+                                .size(24.dp)
+                                .background(
+                                    color = Color(0x40BDBDBD),
+                                    shape = RoundedCornerShape(24.dp)
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.edit_review),
+                                contentDescription = "",
+                                tint = placeholderTextColor
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier
-                            .size(24.dp)
-                            .background(
-                                color = Color(0x40EF3A01),
-                                shape = RoundedCornerShape(24.dp)
-                            )) {
-                            Icon(painter = painterResource(id = R.drawable.delete_review), contentDescription = "", tint = placeholderTextColor)
+                        IconButton(
+                            onClick = {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    ViewModels.reviewDialog.onClickDelete(
+                                        context,
+                                        review.id,
+                                        Repositories.authRepository.getUserToken(context = context).token
+                                    )
+                                }
+                            }, modifier = Modifier
+                                .size(24.dp)
+                                .background(
+                                    color = Color(0x40EF3A01),
+                                    shape = RoundedCornerShape(24.dp)
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.delete_review),
+                                contentDescription = "",
+                                tint = placeholderTextColor
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))

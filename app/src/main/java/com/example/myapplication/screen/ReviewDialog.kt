@@ -2,6 +2,7 @@
 
 package com.example.myapplication.screen
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,31 +20,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.myapplication.R
-import com.example.myapplication.screen.destinations.Destination
+import com.example.myapplication.domain.ViewModels
+import com.example.myapplication.domain.general_use_cases.MakeToastUseCase
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.ButtonView
-import com.example.myapplication.viewmodel.movie_screen.ReviewDialogState
-import com.example.myapplication.viewmodel.movie_screen.rememberReviewDialogState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun ReviewDialog(reviewDialogState: ReviewDialogState) {
+fun ReviewDialog(context: Context, movieId: String, id: String) {
     Log.i("reviewDialogState", "I'm on")
 
-    if (reviewDialogState.showDialog.value) {
+    if (ViewModels.reviewDialog.showDialog.value) {
         Dialog(
             onDismissRequest = {
-                reviewDialogState.showDialog.value = false
-                reviewDialogState.textData.value = ""
-                reviewDialogState.checkedState.value = false
-                reviewDialogState.ratingValue.value = 0
+                ViewModels.reviewDialog.showDialog.value = false
+                ViewModels.reviewDialog.textData.value = ""
+                ViewModels.reviewDialog.checkedState.value = false
+                ViewModels.reviewDialog.ratingValue.value = 0
             },
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
@@ -76,20 +77,20 @@ fun ReviewDialog(reviewDialogState: ReviewDialogState) {
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Star(1, reviewDialogState.ratingValue)
-                                    Star(2, reviewDialogState.ratingValue)
-                                    Star(3, reviewDialogState.ratingValue)
-                                    Star(4, reviewDialogState.ratingValue)
-                                    Star(5, reviewDialogState.ratingValue)
-                                    Star(6, reviewDialogState.ratingValue)
-                                    Star(7, reviewDialogState.ratingValue)
-                                    Star(8, reviewDialogState.ratingValue)
-                                    Star(9, reviewDialogState.ratingValue)
-                                    Star(10, reviewDialogState.ratingValue)
+                                    Star(1, ViewModels.reviewDialog.ratingValue)
+                                    Star(2, ViewModels.reviewDialog.ratingValue)
+                                    Star(3, ViewModels.reviewDialog.ratingValue)
+                                    Star(4, ViewModels.reviewDialog.ratingValue)
+                                    Star(5, ViewModels.reviewDialog.ratingValue)
+                                    Star(6, ViewModels.reviewDialog.ratingValue)
+                                    Star(7, ViewModels.reviewDialog.ratingValue)
+                                    Star(8, ViewModels.reviewDialog.ratingValue)
+                                    Star(9, ViewModels.reviewDialog.ratingValue)
+                                    Star(10, ViewModels.reviewDialog.ratingValue)
                                 }
                             }
-                            TextField(value = reviewDialogState.textData.value,
-                                onValueChange = { reviewDialogState.textData.value = it },
+                            TextField(value = ViewModels.reviewDialog.textData.value,
+                                onValueChange = { ViewModels.reviewDialog.textData.value = it },
                                 modifier = Modifier
                                     .height(120.dp)
                                     .fillMaxWidth(),
@@ -137,8 +138,8 @@ fun ReviewDialog(reviewDialogState: ReviewDialogState) {
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Checkbox(
-                                            checked = reviewDialogState.checkedState.value,
-                                            onCheckedChange = { reviewDialogState.checkedState.value = it },
+                                            checked = ViewModels.reviewDialog.checkedState.value,
+                                            onCheckedChange = { ViewModels.reviewDialog.checkedState.value = it },
                                             colors = CheckboxDefaults.colors(
                                                 checkedColor = Color.Transparent,
                                                 uncheckedColor = Color.Transparent,
@@ -160,10 +161,17 @@ fun ReviewDialog(reviewDialogState: ReviewDialogState) {
                                         textColor = Color.White,
                                         contentPadding = PaddingValues(16.dp)
                                     ) {
-                                        reviewDialogState.showDialog.value = false
-                                        reviewDialogState.textData.value = ""
-                                        reviewDialogState.checkedState.value = false
-                                        reviewDialogState.ratingValue.value = 0
+                                        if(ViewModels.reviewDialog.textData.value != "") {
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                                ViewModels.reviewDialog.onClickSave(context = context,
+                                                    movieId = movieId,
+                                                    id = id
+                                                )
+                                            }
+                                        }
+                                        else {
+                                            MakeToastUseCase().show(context, "Поле отзыва должно быть обязательно заполнено")
+                                        }
                                     }
                                     ButtonView(
                                         buttonText = "Отмена",
@@ -172,10 +180,10 @@ fun ReviewDialog(reviewDialogState: ReviewDialogState) {
                                         textColor = textColor,
                                         contentPadding = PaddingValues(6.dp)
                                     ) {
-                                        reviewDialogState.showDialog.value = false
-                                        reviewDialogState.textData.value = ""
-                                        reviewDialogState.checkedState.value = false
-                                        reviewDialogState.ratingValue.value = 0
+                                        ViewModels.reviewDialog.showDialog.value = false
+                                        ViewModels.reviewDialog.textData.value = ""
+                                        ViewModels.reviewDialog.checkedState.value = false
+                                        ViewModels.reviewDialog.ratingValue.value = 0
                                     }
                                 }
                             }

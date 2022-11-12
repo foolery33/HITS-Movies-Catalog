@@ -3,9 +3,7 @@ package com.example.myapplication.viewmodel.profile_screen
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.general_use_cases.MakeToastUseCase
 import com.example.myapplication.domain.profile_screen.*
@@ -24,6 +22,8 @@ class ProfileScreenState {
     // При клике на кнопку "Сохранить" на Profile Screen, в эту перепенную будет записываться linkData.
     // Она нужна для того, чтобы аватарка постоянно не перерисовывалась при изменении поля "Ссылка на аватарку"
     val showPictureByLink = mutableStateOf("")
+    val id = mutableStateOf("")
+    val nickName = mutableStateOf("")
 
     val nameData = mutableStateOf("Тест Тестович")
     val maleSexData = mutableStateOf(false)
@@ -39,6 +39,8 @@ class ProfileScreenState {
             val response: ProfileResponse = GetProfileUseCase().getProfile(context = context)
             profileResponse = response
             emailData.value = response.email
+            id.value = response.id
+            nickName.value = response.nickName ?: ""
             if (response.avatarLink == null) {
                 linkData.value = ""
             } else {
@@ -122,9 +124,4 @@ class ProfileScreenState {
             )
         }
     }
-}
-
-@Composable
-fun rememberProfileScreenState() = remember {
-    ProfileScreenState()
 }

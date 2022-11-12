@@ -62,6 +62,7 @@ class MainScreenState: ViewModel() {
             val response: MovieDetailsModel = GetMovieDetailsUseCase().getDetails(id)
             GetFavouriteStatusUseCase().isFavourite(id)
             movies[response.id] = response
+            ViewModels.movieScreen.reviewList.value = response.reviews
             navigator.navigate(MovieScreenDestination(groupName = id))
         } catch (e: Exception) {
             Log.i("errorList", e.message.toString())
