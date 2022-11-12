@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.R
-import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.profile_screen.DateReverseConverter
 import com.example.myapplication.network.movie.ReviewModel
@@ -134,7 +133,7 @@ fun MyReview(context: Context, review: ReviewModel) {
                                     ViewModels.reviewDialog.onClickDelete(
                                         context,
                                         review.id,
-                                        Repositories.authRepository.getUserToken(context = context).token
+                                        ViewModels.profileScreen.id.value
                                     )
                                 }
                             }, modifier = Modifier

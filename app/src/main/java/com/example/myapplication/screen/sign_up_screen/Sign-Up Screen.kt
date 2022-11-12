@@ -16,6 +16,8 @@ import com.example.myapplication.R
 import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.createDatePicker
+import com.example.myapplication.domain.general_use_cases.MakeToastUseCase
+import com.example.myapplication.domain.sign_up_screen.use_cases.CheckPasswordsUseCase
 import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.SignInScreenDestination
 import com.example.myapplication.screen.destinations.SignUpScreenDestination
@@ -36,7 +38,9 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
 
     val context = LocalContext.current
     Column(
-        modifier = Modifier.fillMaxSize().background(color = backgroundColor),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = backgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -108,12 +112,30 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
                         areFilledFields = ViewModels.signUpScreen.areFilledFields,
                         paddingValues = defaultTopPadding
                     ) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            ViewModels.signUpScreen.onClickRegister(context)
+                        if (!CheckPasswordsUseCase().check(
+                                ViewModels.signUpScreen.passwordData.value,
+                                ViewModels.signUpScreen.confirmPasswordData.value
+                            )
+                        ) {
+                            MakeToastUseCase().show(context, "Пароли не совпадают")
                         }
-                        Log.i("tokenValue", Repositories.authRepository.getUserToken(context).token)
-                        navigator.popBackStack(SignUpScreenDestination, true)
-                        navigator.navigate(MainScreenDestination)
+                        else {
+                            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(ViewModels.signUpScreen.emailData.value)
+                                    .matches()) {
+                                MakeToastUseCase().show(context, "Некорректный e-mail")
+                            }
+                            else {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    ViewModels.signUpScreen.onClickRegister(context)
+                                }
+                                Log.i(
+                                    "tokenValue",
+                                    Repositories.authRepository.getUserToken(context).token
+                                )
+                                navigator.popBackStack(SignUpScreenDestination, true)
+                                navigator.navigate(MainScreenDestination)
+                            }
+                        }
                     }
                     ButtonView(
                         buttonText = "У меня уже есть аккаунт",

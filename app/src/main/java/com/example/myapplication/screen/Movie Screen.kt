@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.R
-import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.main_screen.use_cases.GetMovieDetailsByIdUseCase
+import com.example.myapplication.domain.movie_screen.use_cases.CheckIfReviewed
 import com.example.myapplication.domain.movie_screen.use_cases.ConvertMoneyViewUseCase
 import com.example.myapplication.network.movie.MovieDetailsModel
 import com.example.myapplication.screen.destinations.MainScreenDestination
@@ -55,7 +55,7 @@ fun MovieScreen(groupName: String, navigator: DestinationsNavigator) {
 
     val context = LocalContext.current
 
-    val currentMovie = GetMovieDetailsByIdUseCase().getDetails(groupName!!)
+    val currentMovie = GetMovieDetailsByIdUseCase().getDetails(groupName)
 
     val state = rememberCollapsingToolbarScaffoldState()
     val progress =
@@ -165,7 +165,7 @@ fun MovieScreen(groupName: String, navigator: DestinationsNavigator) {
 @Composable
 fun Body(currentMovie: MovieDetailsModel) {
     val context = LocalContext.current
-    ReviewDialog(context = context, movieId = currentMovie.id, id = Repositories.authRepository.getUserToken(context).token)
+    ReviewDialog(context = context, movieId = currentMovie.id, id = ViewModels.profileScreen.id.value)
     LazyColumn(
         modifier = Modifier.padding(horizontal = defaultPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -278,7 +278,7 @@ fun Body(currentMovie: MovieDetailsModel) {
                         ViewModels.reviewDialog.action = "add"
                         ViewModels.reviewDialog.showDialog.value = true
                     }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                        if(!ViewModels.movieScreen.isMadeReview.value) {
+                        if(!CheckIfReviewed().result(ViewModels.profileScreen.nickName.value, ViewModels.movieScreen.reviewList.value!!)) {
                             Icon(
                                 painter = painterResource(id = R.drawable.plus_sign),
                                 contentDescription = "",
@@ -291,16 +291,10 @@ fun Body(currentMovie: MovieDetailsModel) {
         }
         if(ViewModels.movieScreen.reviewList.value != null) {
             items(ViewModels.movieScreen.reviewList.value!!) { item ->
-                if(item.author != null) {
-                    Log.i("ProfileInfo", item.author.userId)
-                    Log.i("ProfileInfo1", ViewModels.profileScreen.id.value)
-                    if(item.author.userId == ViewModels.profileScreen.id.value) {
-                        MyReview(context = context, item)
-                    }
-                    else {
-                        RandomReview(review = item)
-                    }
-                }
+                Log.i("NicknameValue1", item.author!!.nickName!!)
+                Log.i("NicknameValue2", ViewModels.profileScreen.nickName.value)
+                if(item.author.nickName!! == ViewModels.profileScreen.nickName.value)
+                    MyReview(context = context, item)
                 else {
                     RandomReview(review = item)
                 }

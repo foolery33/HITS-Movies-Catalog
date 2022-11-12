@@ -57,6 +57,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
     LaunchedEffect(key1 = Unit) {
         ViewModels.mainScreen.getMoviesByPage(1)
         ViewModels.mainScreen.getPromotedMovie()
+        ViewModels.profileScreen.onClickProfile(context = context, navigator)
     }
 
     Scaffold(bottomBar = { BottomBar(navigator, 0) }) {

@@ -1,6 +1,7 @@
 package com.example.myapplication.network.review
 
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -19,7 +20,7 @@ interface ReviewApi {
                            @Path("movieId") movieId: String,
                            @Path("id") id: String
     )
-    @PUT("/api/movie/{movieId}/review/{id}/delete")
+    @DELETE("/api/movie/{movieId}/review/{id}/delete")
     suspend fun deleteReview(@Header("Authorization") token: String,
                              @Path("movieId") movieId: String,
                              @Path("id") id: String)
