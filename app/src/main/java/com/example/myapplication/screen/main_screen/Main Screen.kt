@@ -35,6 +35,7 @@ import com.example.myapplication.domain.main_screen.use_cases.MakeColorRatingUse
 import com.example.myapplication.domain.movie_screen.use_cases.GetMovieRatingUseCase
 import com.example.myapplication.network.favourite_movies.MovieModel
 import com.example.myapplication.network.movie.MovieElementModel
+import com.example.myapplication.screen.destinations.MainScreenDestination
 import com.example.myapplication.screen.destinations.MovieScreenDestination
 import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.BottomBar
@@ -44,13 +45,6 @@ import com.example.myapplication.viewmodel.main_screen.MainScreenState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.*
-
-fun LazyListState.isScrolledToTheEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index
-
-/*@Composable
-fun MovieList(navigator: DestinationsNavigator, viewModel: MainScreenState) {
-    MainScreen(navigator = navigator, movieList = viewModel.movie)
-}*/
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
@@ -64,9 +58,13 @@ fun MainScreen(navigator: DestinationsNavigator) {
 
     val movieListItems: LazyPagingItems<MovieElementModel> = movieList.collectAsLazyPagingItems()
 
+    LaunchedEffect(key1 = Unit) {
+        ViewModels.mainScreen.getMoviesByPage(1)
+        ViewModels.mainScreen.getPromotedMovie()
+    }
+
     Scaffold(bottomBar = { BottomBar(navigator, 0) }) {
         LazyColumn(
-
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = backgroundColor),
@@ -74,8 +72,7 @@ fun MainScreen(navigator: DestinationsNavigator) {
             verticalArrangement = Arrangement.spacedBy(halfDefaultPadding)
         ) {
 
-
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 ViewModels.mainScreen.getFavourites(context)
                 Log.i("favouritesRequest", "favouritesRequest")
             }
@@ -83,8 +80,8 @@ fun MainScreen(navigator: DestinationsNavigator) {
             //if(ViewModel.mainScreen.currentM)
             item {
                 Box {
-                    Image(
-                        painter = painterResource(id = R.drawable.magicians_poster),
+                    AsyncImage(
+                        model = ViewModels.mainScreen.promotedMovie,
                         contentDescription = "",
                         modifier = Modifier
                             .onGloballyPositioned { sizeImage = it.size }
@@ -114,11 +111,11 @@ fun MainScreen(navigator: DestinationsNavigator) {
                             textColor = Color.White,
                             contentPadding = PaddingValues(12.dp)
                         ) {
-                            Log.i(
-                                "tokenValue",
-                                Repositories.authRepository.getUserToken(context).token
-                            )
-                            navigator.navigate(MovieScreenDestination(groupName = ""))
+                            CoroutineScope(Dispatchers.Main).launch {
+                                ViewModels.mainScreen.onClickMovie(
+                                    ViewModels.mainScreen.movieList[0].id, navigator
+                                )
+                            }
                         }
                     }
                 }
@@ -136,9 +133,12 @@ fun MainScreen(navigator: DestinationsNavigator) {
                 }
             }
             itemsIndexed(movieListItems) { index, item ->
-                item?.let {
-                    GalleryElement(navigator = navigator, movie = it)
+                if (index != 0) {
+                    item?.let {
+                        GalleryElement(navigator = navigator, movie = it)
+                    }
                 }
+
             }
             item {
                 Spacer(modifier = Modifier.height(70.dp))
@@ -158,15 +158,14 @@ fun Favourites(context: Context, navigator: DestinationsNavigator) {
         state = ViewModels.mainScreen.lazyListState,
         horizontalArrangement = Arrangement.spacedBy(defaultPadding)
     ) {
-        itemsIndexed(ViewModels.mainScreen.favouriteMovies.movies) { index, movie ->
-            if(index == ViewModels.mainScreen.lazyListState.firstVisibleItemIndex + 1) {
+        itemsIndexed(ViewModels.mainScreen.favouriteMoviesList.value) { index, movie ->
+            if (index == ViewModels.mainScreen.lazyListState.firstVisibleItemIndex + 1) {
                 FavouritesElement(
                     context = context, movie = movie, navigator = navigator, modifier = Modifier
                         .height(172.dp)
                         .width(120.dp)
                 )
-            }
-            else {
+            } else {
                 FavouritesElement(
                     context = context,
                     movie = movie,
@@ -206,9 +205,7 @@ fun FavouritesElement(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
                     ViewModels.mainScreen.onClickDelete(context, movie.id)
-                    withContext(Dispatchers.Main) {
-                        Repositories.favouriteMoviesRepository.getFavourites(context)
-                    }
+                    ViewModels.mainScreen.getFavourites(context)
                 }
             }, modifier = Modifier
                 .align(Alignment.TopEnd)

@@ -26,6 +26,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 val loginButtonTopPadding = 48.dp
 val defaultPadding = 16.dp
@@ -86,9 +87,9 @@ fun SignInScreen(navigator: DestinationsNavigator) {
                                 context = context,
                                 navigator = navigator
                             )
-                            /*withContext(Dispatchers.IO) {
-                                ViewModel.mainScreen.getFavourites(context = context)
-                            }*/
+                            withContext(Dispatchers.IO) {
+                                ViewModels.mainScreen.getPromotedMovie()
+                            }
                         }
                     } catch (e: Exception) {
                         MakeToastUseCase().show(context, "Срок действия авторизационного токена истёк")

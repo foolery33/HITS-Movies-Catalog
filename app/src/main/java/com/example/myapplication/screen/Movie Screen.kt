@@ -49,7 +49,7 @@ val headerHeightDp = 275.dp
 
 @Destination
 @Composable
-fun MovieScreen(groupName: String?, navigator: DestinationsNavigator) {
+fun MovieScreen(groupName: String, navigator: DestinationsNavigator) {
 
     val context = LocalContext.current
 
