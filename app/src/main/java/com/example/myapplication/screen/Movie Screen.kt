@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.R
+import com.example.myapplication.data.Repositories
 import com.example.myapplication.domain.ViewModels
 import com.example.myapplication.domain.main_screen.use_cases.GetMovieDetailsByIdUseCase
 import com.example.myapplication.domain.movie_screen.use_cases.ConvertMoneyViewUseCase
@@ -34,7 +36,7 @@ import com.example.myapplication.ui.theme.*
 import com.example.myapplication.view.AboutFilmRow
 import com.example.myapplication.view.MovieGenre
 import com.example.myapplication.view.MyReview
-import com.example.myapplication.viewmodel.movie_screen.ReviewDialogState
+import com.example.myapplication.view.RandomReview
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.flowlayout.SizeMode
@@ -119,7 +121,7 @@ fun MovieScreen(groupName: String, navigator: DestinationsNavigator) {
                 }
             }
         ) {
-            Body(ViewModels.movieScreen.reviewDialogState, currentMovie)
+            Body(currentMovie)
         }
         Row(
             modifier = Modifier
@@ -161,8 +163,9 @@ fun MovieScreen(groupName: String, navigator: DestinationsNavigator) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Body(reviewDialogState: ReviewDialogState, currentMovie: MovieDetailsModel) {
-    ReviewDialog(reviewDialogState = reviewDialogState)
+fun Body(currentMovie: MovieDetailsModel) {
+    val context = LocalContext.current
+    ReviewDialog(context = context, movieId = currentMovie.id, id = Repositories.authRepository.getUserToken(context).token)
     LazyColumn(
         modifier = Modifier.padding(horizontal = defaultPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -258,7 +261,7 @@ fun Body(reviewDialogState: ReviewDialogState, currentMovie: MovieDetailsModel) 
                 }
             }
         }
-        Log.i("reviewDialogState", reviewDialogState.showDialog.value.toString())
+        Log.i("reviewDialogState", ViewModels.reviewDialog.showDialog.value.toString())
         item {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -272,19 +275,36 @@ fun Body(reviewDialogState: ReviewDialogState, currentMovie: MovieDetailsModel) 
                 )
                 CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
                     IconButton(onClick = {
-                        reviewDialogState.showDialog.value = true
+                        ViewModels.reviewDialog.action = "add"
+                        ViewModels.reviewDialog.showDialog.value = true
                     }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.plus_sign),
-                            contentDescription = "",
-                            tint = textColor
-                        )
+                        if(!ViewModels.movieScreen.isMadeReview.value) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.plus_sign),
+                                contentDescription = "",
+                                tint = textColor
+                            )
+                        }
                     }
                 }
             }
         }
-        items(5) {
-            MyReview()
+        if(ViewModels.movieScreen.reviewList.value != null) {
+            items(ViewModels.movieScreen.reviewList.value!!) { item ->
+                if(item.author != null) {
+                    Log.i("ProfileInfo", item.author.userId)
+                    Log.i("ProfileInfo1", ViewModels.profileScreen.id.value)
+                    if(item.author.userId == ViewModels.profileScreen.id.value) {
+                        MyReview(context = context, item)
+                    }
+                    else {
+                        RandomReview(review = item)
+                    }
+                }
+                else {
+                    RandomReview(review = item)
+                }
+            }   
         }
     }
 }
